@@ -11,7 +11,8 @@ const mysql_pool = mysql.createPool({
     host: process.env.mysql_host,
     user: process.env.mysql_user,
     password: process.env.mysql_password,
-    database: process.env.mysql_database
+    database: process.env.mysql_database,
+    multipleStatements: false 
 }).promise()
 
 mongoose.connect(process.env.mongodb_url + process.env.mongodb_user, {})
