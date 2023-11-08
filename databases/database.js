@@ -1,20 +1,11 @@
-// Module MySQL
-import mysql from 'mysql2'
 // Modules MongoDB
-import express from 'express'
-import mongoose from 'mongoose'
+const mongoose = require('mongoose');
 // Module pour les variables d'environnement stocké dans le fichier ".env"
-import dotenv from 'dotenv'
+const dotenv = require('dotenv');
 dotenv.config()
 
-const mysql_pool = mysql.createPool({
-    host: process.env.mysql_host,
-    user: process.env.mysql_user,
-    password: process.env.mysql_password,
-    database: process.env.mysql_database,
-    multipleStatements: false 
-}).promise()
-
-mongoose.connect(process.env.mongodb_url + process.env.mongodb_user, {})
+mongoose.connect(process.env.mongodb_url, {})
     .then(result => console.log("Mongo Connected"))
     .catch(err => console.log(err))
+
+module.exports = {mongoose};
