@@ -1,0 +1,1 @@
+import { rank } from '../models/rank.model';

@@ -1,1 +1,0 @@
-import { contact } from '../models/contacts.js';
