@@ -82,7 +82,7 @@ const UserSchema = mongoose.Schema(
     }
 );
 
-// Fire function after doc saved in base
+// Fire function after doc saved in base.
 UserSchema.post('save', function(doc, next  ) {
     next();
 });
