@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {isEmail} = require('validator');
 
 const UserSchema = mongoose.Schema(
     {
@@ -10,10 +11,11 @@ const UserSchema = mongoose.Schema(
         },
         mail : {
             type : String,
-            required : true,
+            required : [true, "Please enter a email"],
             unique : true,
             lowercase : true,
-            maxlenght : 50
+            maxlenght : 50,
+            validate : [isEmail, "Please enter a correct email"]
         },
         password : {
             type : String,
@@ -78,5 +80,16 @@ const UserSchema = mongoose.Schema(
         }
     }
 );
+
+// Fire function after doc saved in base
+UserSchema.post('save', function(doc, next  ) {
+    console.log("Post saved : post");
+    next();
+});
+
+UserSchema.pre('save', function(next  ) {
+    console.log("Post saved : pre", this);
+    next();
+});
 
 module.exports = mongoose.model("user", UserSchema)
