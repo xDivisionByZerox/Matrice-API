@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const {isEmail} = require('validator');
+const bcrypt = require("bcrypt")
 
 const UserSchema = mongoose.Schema(
     {
@@ -83,12 +84,17 @@ const UserSchema = mongoose.Schema(
 
 // Fire function after doc saved in base
 UserSchema.post('save', function(doc, next  ) {
-    console.log("Post saved : post");
     next();
 });
 
-UserSchema.pre('save', function(next  ) {
-    console.log("Post saved : pre", this);
+UserSchema.pre('save', function(next) {
+    // Encrypt the password before writing it in database
+    bcrypt
+    .hash(this.password, Number(process.env.salt_round))
+    .then(hash => {
+        this.password = hash;
+    })
+    .catch(err => console.error(err.message))
     next();
 });
 
