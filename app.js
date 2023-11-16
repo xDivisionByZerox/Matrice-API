@@ -10,6 +10,7 @@ const app = express();
 const bodyparser = require("body-parser");
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({ extended : true }))
+
 // Routers available
 const userRouter = require("./routes/user.route")
 // Routes used

@@ -21,42 +21,37 @@ const UserSchema = mongoose.Schema(
         password : {
             type : String,
             required : true,
-            unique : false,
             maxlenght : 255
         },
         lastname : {
             type : String,
             required : true,
-            unique : false,
             maxlenght : 20
         },
         firstname : {
             type : String,
             required : true,
-            unique : false,
             maxlenght : 20
         },
         picture : {
             type : String,
             required : false,
-            unique : false,
-            maxlenght : 20
+            maxlenght : 20,
+            default : null
         },
         bio : {
             type : String,
             required : false,
-            unique : false,
-            maxlenght : 255
+            maxlenght : 255,
+            default : null
         },
         birthday : {
             type : Date,
-            required : true,
-            unique : true
+            required : true
         },
         rank : {
             type : String,
-            required : false,
-            unique : false
+            default : "beginner"
         },
         subscribes : {
             type : Number,
@@ -93,9 +88,10 @@ UserSchema.pre('save', function(next) {
     .hash(this.password, Number(process.env.salt_round))
     .then(hash => {
         this.password = hash;
+        this.birthday = Date(this.birthday)
+        next();
     })
     .catch(err => console.error(err.message))
-    next();
 });
 
 module.exports = mongoose.model("user", UserSchema)
