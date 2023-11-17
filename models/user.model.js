@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt")
 
 const UserSchema = mongoose.Schema(
     {
-        pseudo : {
+        nickname : {
             type : String,
             required : true,
             unique : true,

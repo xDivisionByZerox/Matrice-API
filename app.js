@@ -1,6 +1,5 @@
 // Packages
 const express = require('express');
-const jwt = require("jsonwebtoken");
 const db = require("./databases/database")
 
 // Lauch the app
@@ -13,7 +12,8 @@ app.use(bodyparser.urlencoded({ extended : true }))
 
 // Routers available
 const userRouter = require("./routes/user.route")
+
 // Routes used
-app.use(userRouter)
+app.use('/user',userRouter)
 
 app.listen(process.env.PORT, () => console.log('Server running on port 3000!'));
