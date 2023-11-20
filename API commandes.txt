@@ -4,3 +4,4 @@ npm install express mongoose
 npm install jsonwebtoken
 npm install validator
 npm install bcrypt --save
+npm install cors

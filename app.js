@@ -1,6 +1,7 @@
 // Packages
 const express = require('express');
-const db = require("./databases/database")
+const db = require("./databases/database");
+const cors = require("cors");
 
 // Lauch the app
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 const bodyparser = require("body-parser");
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended : true }));
+app.use(cors());
 
 // Routers available
 const userRouter = require("./routes/user.route")

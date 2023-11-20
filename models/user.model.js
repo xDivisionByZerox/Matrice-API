@@ -97,4 +97,17 @@ UserSchema.pre('save', function(next) {
     .catch(err => console.error(err.message))
 });
 
+UserSchema.pre('updateOne', function(next) {
+    if(this._update.password){
+    // Encrypt the password before writing it in database
+    bcrypt
+    .hash(this._update.password, Number(process.env.salt_round))
+    .then(hash => {
+        this._update.password = hash;
+        next();
+    })
+    .catch(err => console.error(err.message))
+    }
+});
+
 module.exports = mongoose.model("user", UserSchema)

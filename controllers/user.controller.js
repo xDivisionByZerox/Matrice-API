@@ -60,3 +60,43 @@ module.exports.getById = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 }
+
+// Modify password : token
+module.exports.modifyPassword = async (req, res) => {
+    const {password, newpassword} = req.body;
+    try{
+        const data = await user.findOne({_id : req.user._id}).select("mail nickname password").exec();
+        if(await bcrypt.compare(password, data.password)){
+            await user.updateOne({_id : req.user._id}, {password : newpassword});
+            res.status(201).send("Password modified");
+        }
+        else{
+            res.status(404).send('Wrong password : ancient');
+        }
+    }catch(err){
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+module.exports.updateUser = async(req, res) => {
+    const {picture, bio} = req.body;
+    try{
+        if(picture && bio){
+            await user.findOneAndUpdate({ _id: req.user._id }, { $set: { picture: picture, bio: bio } });
+            res.status(201).send("Password modified : picture : bio");
+        }
+        else if(picture){
+            await user.findOneAndUpdate({_id : req.user._id}, {picture : picture});
+            res.status(201).send("Password modified : picture");
+        }
+        else if(bio){
+            await user.findOneAndUpdate({_id : req.user._id},{bio : bio});
+            res.status(201).send("Password modified : bio");
+        }
+        else{
+            res.status(401).send("Invalid or unspecified");
+        }
+    }catch(err){
+        res.status(500).send('Internal Server Error');
+    }
+}
