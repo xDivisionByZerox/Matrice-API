@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 const user =  require('../models/user.model.js');
 
 const {generateAccessToken} = require("../utils/auth.js");

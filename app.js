@@ -7,8 +7,8 @@ const app = express();
 
 // App will work with json
 const bodyparser = require("body-parser");
-app.use(bodyparser.json())
-app.use(bodyparser.urlencoded({ extended : true }))
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended : true }));
 
 // Routers available
 const userRouter = require("./routes/user.route")
