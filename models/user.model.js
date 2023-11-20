@@ -8,6 +8,7 @@ const UserSchema = mongoose.Schema(
             type : String,
             required : true,
             unique : true,
+            lowercase : true,
             maxlenght : 20
         },
         mail : {
@@ -26,11 +27,13 @@ const UserSchema = mongoose.Schema(
         lastname : {
             type : String,
             required : true,
+            lowercase : true,
             maxlenght : 20
         },
         firstname : {
             type : String,
             required : true,
+            lowercase : true,
             maxlenght : 20
         },
         picture : {

@@ -47,21 +47,16 @@ module.exports.login = async (req, res) => {
 
 // Get data from user : thanks to his id
 module.exports.getById = async (req, res) => {
-    const { id } = req.params;
-    if(mongoose.Types.ObjectId.isValid(id)){
-        try{
-            const data = await user.findOne({ _id : id }).select('-password').exec();
-            if(data){
-                res.status(200).json(data);
-            }
-            else{
-                res.status(404).send('No user found : id');
-            }
-        }catch(err){
-            res.status(500).send('Internal Server Error');
+    const { nickname } = req.body;
+    try{
+        const data = await user.findOne({ nickname: nickname }).select('-password').exec();
+        if(data){
+            res.status(200).json(data);
         }
-    }
-    else{
-        res.status(401).send('User : Invalid id');
+        else{
+            res.status(404).send('No user found : nickname');
+        }
+    }catch(err){
+        res.status(500).send('Internal Server Error');
     }
 }
