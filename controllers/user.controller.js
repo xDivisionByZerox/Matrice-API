@@ -71,7 +71,7 @@ module.exports.modifyPassword = async (req, res) => {
             res.status(201).send("Password modified");
         }
         else{
-            res.status(404).send('Wrong password : ancient');
+            res.status(401).send('Wrong password : ancient');
         }
     }catch(err){
         res.status(500).send('Internal Server Error');

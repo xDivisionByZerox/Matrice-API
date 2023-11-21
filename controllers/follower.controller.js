@@ -28,6 +28,6 @@ module.exports.unfollow = async (req, res) => {
     }
     else{
         await follower.deleteMany(link);
-        res.status(400).json("Unfollow: relationship deleted successfully");
+        res.status(200).json("Unfollow: relationship deleted successfully");
     }    
 };  

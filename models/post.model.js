@@ -42,7 +42,7 @@ const PostSchema = mongoose.Schema(
             default : false
         },
         price : {
-            type : Boolean,
+            type : Number,
             default : 10
         },
         creation : {
@@ -52,4 +52,4 @@ const PostSchema = mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("post", PostSchema)
+module.exports = mongoose.model("post", PostSchema);
