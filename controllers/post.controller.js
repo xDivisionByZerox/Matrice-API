@@ -30,6 +30,7 @@ module.exports.createPost = async(req, res) => {
 }
 
 module.exports.buyPost = async(req, res) => {
+    
 }
 
 module.exports.enablePost = async(req, res) => {
@@ -38,5 +39,23 @@ module.exports.enablePost = async(req, res) => {
 module.exports.disablePost = async(req, res) => {
 }
 
-module.exports.commentPost = async(req, res) => {
+//                              //
+//-------- MiddleWares----------//
+//                              //
+module.exports.verifyExists = async(req, res, next) => {
+    const { post_id } = req.body;
+    try{
+        if(user_id && mongoose.Types.ObjectId.isValid(user_id)){
+            const data = await post.findOne({ _id : post_id }).exec();
+            if(!data){
+                res.status(401).json("Like / dislike : middleware : post don't exists ");
+            }
+        }
+        else{
+            res.status(404).json("Post Id not specified or not in the good format");
+        }
+        next();
+    }catch(err){
+        res.status(500).send('Internal Server Error');
+    }
 }

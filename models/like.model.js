@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 const LikeSchema = mongoose.Schema(
     {
         userId : {
-            type : String,
+            type : mongoose.SchemaTypes.ObjectIds,
             required : true
         },
         postId : {
-            type : String,
+            type : mongoose.SchemaTypes.ObjectId,
             required : true
         }
     }
 );
 
-module.exports = mongoose.model("like", LikeSchema)
+module.exports = mongoose.model("like", LikeSchema);

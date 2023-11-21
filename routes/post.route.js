@@ -11,6 +11,5 @@ router.post("/create", authentificateToken,tagController.createTags ,postControl
 router.post("/buy", authentificateToken, postController.buyPost);
 router.post("/enable", authentificateToken, postController.getPost);
 router.post("/disable", authentificateToken);
-router.post("/comment", authentificateToken);
 
 module.exports = router;
