@@ -1,4 +1,5 @@
 const post =  require("../models/post.model");
+const mongoose = require('mongoose');
 
 module.exports.getPost = async(req, res) => {
     const { post_id } = req.body;
@@ -45,10 +46,13 @@ module.exports.disablePost = async(req, res) => {
 module.exports.verifyExists = async(req, res, next) => {
     const { post_id } = req.body;
     try{
-        if(user_id && mongoose.Types.ObjectId.isValid(user_id)){
-            const data = await post.findOne({ _id : post_id }).exec();
-            if(!data){
-                res.status(401).json("Like / dislike : middleware : post don't exists ");
+        if(post_id && mongoose.Types.ObjectId.isValid(post_id)){
+            const post_data = await post.findOne({ _id : post_id }).exec();
+            if(!post_data){
+                res.status(401).json("Post : middleware : post don't exists ");
+            }
+            else{
+                req.post_data = post_data;
             }
         }
         else{
@@ -56,6 +60,7 @@ module.exports.verifyExists = async(req, res, next) => {
         }
         next();
     }catch(err){
+        console.log(err);
         res.status(500).send('Internal Server Error');
     }
 }
