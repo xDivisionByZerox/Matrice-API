@@ -78,6 +78,7 @@ module.exports.modifyPassword = async (req, res) => {
     }
 }
 
+// Update user bio + user picture
 module.exports.updateUser = async(req, res) => {
     const {picture, bio} = req.body;
     try{
@@ -97,6 +98,29 @@ module.exports.updateUser = async(req, res) => {
             res.status(401).send("Invalid or unspecified");
         }
     }catch(err){
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+//                              //
+//-------- MiddleWares----------//
+//                              //
+// MiddleWare who vrify the user exists - req.body.user_id
+module.exports.verifyUserExists = async(req, res, next) => {
+    const { user_id } = req.body;
+    try{
+        if(user_id && mongoose.Types.ObjectId.isValid(user_id)){
+            const data = await user.findOne({ _id : user_id }).select('-password').exec();
+            if(!data){
+                res.status(401).json("Follow / Unfollow : middleware : user don't exists ");
+            }
+        }
+        else{
+            res.status(404).json("User Id not specified or not in the good format");
+        }
+        next();
+    }catch(err){
+        console.log(err);
         res.status(500).send('Internal Server Error');
     }
 }

@@ -80,11 +80,12 @@ const UserSchema = mongoose.Schema(
     }
 );
 
-// Fire function after doc saved in base.
+// Fire function after doc saved in base - coins post can be modified here
 UserSchema.post('save', function(doc, next  ) {
     next();
 });
 
+// Bcrypt the password
 UserSchema.pre('save', function(next) {
     // Encrypt the password before writing it in database
     bcrypt
@@ -97,6 +98,7 @@ UserSchema.pre('save', function(next) {
     .catch(err => console.error(err.message))
 });
 
+// Bcrypt the new password
 UserSchema.pre('updateOne', function(next) {
     if(this._update.password){
     // Encrypt the password before writing it in database
