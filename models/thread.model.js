@@ -11,8 +11,8 @@ const ThreadSchema = mongoose.Schema(
             required : true
         },
         posts : {
-            type : [String],
-            required : true
+            type : [mongoose.SchemaTypes.ObjectId],
+            required : false
         }
     }
 );

@@ -3,16 +3,17 @@ const mongoose = require('mongoose');
 const PostSchema = mongoose.Schema(
     {
         motherId : {
-            type : String,
+            type : mongoose.SchemaTypes.ObjectId,
+            ref : "post",
             default : null
         },
-        creatorId : {   
-            type : String,
-            required : true
+        creatorId : { 
+            type : mongoose.SchemaTypes.ObjectId,
+            ref : "user"
         },
         ownerId : {
-            type : String,
-            required : true
+            type : mongoose.SchemaTypes.ObjectId,
+            ref : "user"
         },
         picture : {
             type : String,
@@ -38,7 +39,7 @@ const PostSchema = mongoose.Schema(
         },
         buy : {
             type : Boolean,
-            default : 0
+            default : false
         },
         price : {
             type : Boolean,

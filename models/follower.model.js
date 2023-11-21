@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 const FollowerSchema = mongoose.Schema(
     {
         userA : {
-            type : String,
+            type : mongoose.SchemaTypes.ObjectId,
             require : true
         },
         userB : {
-            type : String,
+            type : mongoose.SchemaTypes.ObjectId,
             require : true
         }
     }

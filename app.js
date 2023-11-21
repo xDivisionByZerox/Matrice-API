@@ -14,8 +14,10 @@ app.use(cors());
 
 // Routers available
 const userRouter = require("./routes/user.route")
+const followerRouter = require("./routes/follower.route")
 
 // Routes used
 app.use('/user',userRouter)
+app.use('/follower',followerRouter)
 
 app.listen(process.env.PORT, () => console.log('Server running on port 3000!'));

@@ -53,8 +53,8 @@ const UserSchema = mongoose.Schema(
             required : true
         },
         rank : {
-            type : String,
-            default : "beginner"
+            type : mongoose.SchemaTypes.ObjectId,
+            ref : "rank"
         },
         subscribes : {
             type : Number,

@@ -3,12 +3,16 @@ const mongoose = require('mongoose');
 const MessageSchema = mongoose.Schema(
     {
         userId : {
-            type : String,
+            type : mongoose.SchemaTypes.ObjectId,
             required : true
         },
         message : {
             type : String,
             required : true
+        },
+        picture : {
+            type : String,
+            required : false
         },
         sent : {
             type : Date,
@@ -16,7 +20,7 @@ const MessageSchema = mongoose.Schema(
         },
         seen : {
             type : Boolean,
-            default : falsex
+            default : false
         }
     }
 );
@@ -25,7 +29,7 @@ const MessageSchema = mongoose.Schema(
 const ConversationSchema = mongoose.Schema(
     {
         users : {
-            type : [String],
+            type : [mongoose.SchemaTypes.ObjectId],
             required : true
         },
         messages : {
