@@ -84,15 +84,15 @@ module.exports.updateUser = async(req, res) => {
     try{
         if(picture && bio){
             await user.findOneAndUpdate({ _id: req.user._id }, { $set: { picture: picture, bio: bio } });
-            res.status(201).send("Password modified : picture : bio");
+            res.status(201).send("Modified : picture : bio");
         }
         else if(picture){
             await user.findOneAndUpdate({_id : req.user._id}, {picture : picture});
-            res.status(201).send("Password modified : picture");
+            res.status(201).send("Modified : picture");
         }
         else if(bio){
             await user.findOneAndUpdate({_id : req.user._id},{bio : bio});
-            res.status(201).send("Password modified : bio");
+            res.status(201).send("Modified : bio");
         }
         else{
             res.status(401).send("Invalid or unspecified");

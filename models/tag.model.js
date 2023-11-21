@@ -5,7 +5,12 @@ const TagSchema = mongoose.Schema(
         name : {
             type : String,
             required : true,
-            maxlenght : 20
+            maxlenght : 10,
+            unique : true 
+        },
+        quantity : {
+            type : Number,
+            default : 0
         }
     }
 );

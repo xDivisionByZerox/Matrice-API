@@ -8,12 +8,12 @@ module.exports.follow = async (req, res) => {
     }
     const existingEntry = await follower.findOne(link);
     if (existingEntry) {
-       res.status(400).json("Follow / Unfollow: relationship already exists");
+       res.status(400).json("Follow : relationship already exists");
     }
     else{
         const newFollower = new follower(link);
         await newFollower.save();
-        res.status(200).json("Follow / Unfollow: relationship created successfully");
+        res.status(200).json("Follow : relationship created successfully");
     }
 };
 
@@ -24,7 +24,7 @@ module.exports.unfollow = async (req, res) => {
     }
     const existingEntry = await follower.findOne(link);
     if (!existingEntry) {
-       res.status(400).json("Follow : relationship don't exists");
+       res.status(400).json("UnFollow : relationship don't exists");
     }
     else{
         await follower.deleteMany(link);
