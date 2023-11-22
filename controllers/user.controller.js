@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 const user =  require('../models/user.model.js');
+const mongoose = require('mongoose');
 
 const {generateAccessToken} = require("../utils/auth.js");
-const { default: mongoose } = require("mongoose");
 
 // Create user : signup in application
 module.exports.signup = (req, res) => {
@@ -130,20 +130,26 @@ module.exports.AddDislike = async(req, res, next) => {
     next();
 }
 
-module.exports.Sub = async(req, res, next) => {
-    const { user_id } = req.body;
-    if(req.user_data){
-        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
-        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+// MiddleWare who needs userController.verify and followerController.verify
+module.exports.sub = async(req, res, next) => {
+    if(!req.follower_data){
+        const { user_id } = req.body;
+        if(req.user_data){
+            await user.findOneAndUpdate({ _id: user_id }, {$inc : {subscribes : 1 }});
+            await user.findOneAndUpdate({ _id: req.user._id }, {$inc : { subscribed : 1 }});
+        }
     }
     next();
 }
 
-module.exports.UnSub = async(req, res, next) => {
-    const { user_id } = req.body;
-    if(req.user_data){
-        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
-        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+// MiddleWare who needs userController.verify
+module.exports.unSub = async(req, res, next) => {
+    if(req.follower_data){
+        const { user_id } = req.body;
+        if(req.user_data){
+            await user.findOneAndUpdate({ _id: user_id }, {$inc : {subscribes : -1 }});
+            await user.findOneAndUpdate({ _id: req.user._id }, {$inc : { subscribed : -1 }});
+        }
     }
     next();
 }
