@@ -10,12 +10,16 @@ router.post('/',    authentificateToken,
                     postController.verifyExists,
                     likeController.doIlike);
 
+// TODO : AddLike USER
 router.post('/like',authentificateToken, 
-                    postController.verifyExists, 
-                    likeController.verifyDontExists, likeController.like);
+                    likeController.verifyExists,
+                    postController.AddLike, 
+                    likeController.like);
 
+// TODO : AddDislike USER
 router.post('/dislike', authentificateToken, 
-                        postController.verifyExists, 
-                        likeController.verifyExists, likeController.dislike);
+                        likeController.verifyExists,
+                        postController.AddDislike, 
+                        likeController.dislike);
 
 module.exports = router;

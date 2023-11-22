@@ -25,7 +25,6 @@ module.exports.createPost = async(req, res) => {
             res.status(200).send("Posted : success");
         })
         .catch((err) => {
-            console.log(err);
             res.status(401).send("Invalid entries");
         });
 }
@@ -60,7 +59,32 @@ module.exports.verifyExists = async(req, res, next) => {
         }
         next();
     }catch(err){
-        console.log(err);
         res.status(500).send('Internal Server Error');
     }
+}
+ 
+// Need to verify if like exists - req.like_data
+module.exports.AddLike = async(req, res, next) => {
+    const { post_id } = req.body;
+    if(!req.like_data){
+        try{
+            req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {likes : 1}});
+        }catch(err){
+            res.status(500).send('Internal Server Error');
+        }
+    }
+    next();
+}
+
+// Need to verify if like exists - req.like_data
+module.exports.AddDislike = async(req, res, next) => {
+    const { post_id } = req.body;
+    if(req.like_data){
+        try{
+            req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {likes : -1}});
+        }catch(err){
+            res.status(500).send('Internal Server Error');
+        }
+    }
+    next();
 }

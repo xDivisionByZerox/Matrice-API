@@ -15,6 +15,9 @@ module.exports.like = async (req, res) => {
             .catch((err) => {
         });
     }
+    else{
+        res.status(401).send("Already liked");
+    }
 }
 
 module.exports.dislike = async (req, res) => {
@@ -31,6 +34,9 @@ module.exports.dislike = async (req, res) => {
             res.status(500).send('Internal Server Error');
         });
     }
+    else{
+        res.status(401).send("You don't like");
+    }
 }
 
 module.exports.doIlike = async (req, res) => {
@@ -41,7 +47,7 @@ module.exports.doIlike = async (req, res) => {
             res.status(200).send("Liked");
         }
         else{
-            res.status(200).send("Not liked");
+            res.status(200).send("Disliked");
         }
     }
 }
@@ -52,28 +58,7 @@ module.exports.doIlike = async (req, res) => {
 //                              //
 module.exports.verifyExists = async(req, res, next) => {
     const { post_id } = req.body;
-    try{
-        const like_data = await like.findOne({ userId : req.user._id, postId : post_id}).exec();
-        req.like_data = like_data;
-        if(!like_data){
-            res.status(401).send("Not liked : middleware");
-        }
-        next();
-    }catch(err){
-        res.status(500).send('Internal Server Error');
-    }
-}
-
-module.exports.verifyDontExists = async(req, res, next) => {
-    const { post_id } = req.body;
-    try{
-        const like_data = await like.findOne({ userId : req.user._id, postId : post_id}).exec();
-        req.like_data = like_data;
-        if(like_data){
-            res.status(401).send("Already liked : middleware");
-        }
-        next();
-    }catch(err){
-        res.status(500).send('Internal Server Error');
-    }
+    const like_data = await like.findOne({ userId : req.user._id, postId : post_id}).exec();
+    req.like_data = like_data;
+    next();
 }
