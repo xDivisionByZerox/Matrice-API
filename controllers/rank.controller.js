@@ -11,7 +11,6 @@ module.exports.addRank = async (req, res) => {
         const savedRank = await newRank.save();
         res.status(201).json(savedRank);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Erreur serveur' });
     }
 };

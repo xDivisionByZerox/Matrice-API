@@ -84,15 +84,15 @@ module.exports.updateUser = async(req, res) => {
     try{
         if(picture && bio){
             await user.findOneAndUpdate({ _id: req.user._id }, { $set: { picture: picture, bio: bio } });
-            res.status(201).send("Modified : picture : bio");
+            res.status(200).send("Modified : picture : bio");
         }
         else if(picture){
             await user.findOneAndUpdate({_id : req.user._id}, {picture : picture});
-            res.status(201).send("Modified : picture");
+            res.status(200).send("Modified : picture");
         }
         else if(bio){
             await user.findOneAndUpdate({_id : req.user._id},{bio : bio});
-            res.status(201).send("Modified : bio");
+            res.status(200).send("Modified : bio");
         }
         else{
             res.status(401).send("Invalid or unspecified");
@@ -106,24 +106,16 @@ module.exports.updateUser = async(req, res) => {
 //-------- MiddleWares----------//
 //                              //
 // MiddleWare who vrify the user exists - req.body.user_id
-module.exports.verifyUserExists = async(req, res, next) => {
+module.exports.verifyExists = async(req, res, next) => {
     const { user_id } = req.body;
-    try{
-        if(user_id && mongoose.Types.ObjectId.isValid(user_id)){
-            const data = await user.findOne({ _id : user_id }).select('-password').exec();
-            if(!data){
-                res.status(401).json("Follow / Unfollow : middleware : user don't exists ");
-            }
-        }
-        else{
-            res.status(404).json("User Id not specified or not in the good format");
-        }
-        next();
-    }catch(err){
-        res.status(500).send('Internal Server Error');
+    if(user_id && mongoose.Types.ObjectId.isValid(user_id)){
+        const data = await user.findOne({ _id : user_id }).select('-password').exec();
+        req.user_data = data;
     }
+    next();
 }
 
+// Verify 
 module.exports.AddLike = async(req, res, next) => {
     if(!req.like_data){
         await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : {coins : 0.5}});
@@ -138,11 +130,20 @@ module.exports.AddDislike = async(req, res, next) => {
     next();
 }
 
-//
 module.exports.Sub = async(req, res, next) => {
+    const { user_id } = req.body;
+    if(req.user_data){
+        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+    }
     next();
 }
 
 module.exports.UnSub = async(req, res, next) => {
+    const { user_id } = req.body;
+    if(req.user_data){
+        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+        //await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+    }
     next();
 }
