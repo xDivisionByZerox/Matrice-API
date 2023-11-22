@@ -67,11 +67,7 @@ module.exports.verifyExists = async(req, res, next) => {
 module.exports.AddLike = async(req, res, next) => {
     const { post_id } = req.body;
     if(!req.like_data){
-        try{
-            req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {likes : 1}});
-        }catch(err){
-            res.status(500).send('Internal Server Error');
-        }
+        req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {price : 1, likes : 1}});
     }
     else{
         req.post_data = await post.findOne({_id : post_id});
@@ -83,11 +79,7 @@ module.exports.AddLike = async(req, res, next) => {
 module.exports.AddDislike = async(req, res, next) => {
     const { post_id } = req.body;
     if(req.like_data){
-        try{
-            req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {likes : -1}});
-        }catch(err){
-            res.status(500).send('Internal Server Error');
-        }
+        req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {price : -1, likes : -1}});
     }
     else{
         req.post_data = await post.findOne({_id : post_id});

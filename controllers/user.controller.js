@@ -125,9 +125,24 @@ module.exports.verifyUserExists = async(req, res, next) => {
 }
 
 module.exports.AddLike = async(req, res, next) => {
+    if(!req.like_data){
+        await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : {coins : 0.5}});
+    }
     next();
 }
 
 module.exports.AddDislike = async(req, res, next) => {
+    if(req.like_data){
+        await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+    }
+    next();
+}
+
+//
+module.exports.Sub = async(req, res, next) => {
+    next();
+}
+
+module.exports.UnSub = async(req, res, next) => {
     next();
 }
