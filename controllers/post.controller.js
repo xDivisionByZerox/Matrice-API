@@ -73,6 +73,9 @@ module.exports.AddLike = async(req, res, next) => {
             res.status(500).send('Internal Server Error');
         }
     }
+    else{
+        req.post_data = await post.findOne({_id : post_id});
+    }
     next();
 }
 
@@ -85,6 +88,9 @@ module.exports.AddDislike = async(req, res, next) => {
         }catch(err){
             res.status(500).send('Internal Server Error');
         }
+    }
+    else{
+        req.post_data = await post.findOne({_id : post_id});
     }
     next();
 }

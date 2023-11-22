@@ -123,3 +123,11 @@ module.exports.verifyUserExists = async(req, res, next) => {
         res.status(500).send('Internal Server Error');
     }
 }
+
+module.exports.AddLike = async(req, res, next) => {
+    next();
+}
+
+module.exports.AddDislike = async(req, res, next) => {
+    next();
+}
