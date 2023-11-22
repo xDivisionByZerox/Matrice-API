@@ -44,23 +44,10 @@ module.exports.disablePost = async(req, res) => {
 //                              //
 module.exports.verifyExists = async(req, res, next) => {
     const { post_id } = req.body;
-    try{
-        if(post_id && mongoose.Types.ObjectId.isValid(post_id)){
-            const post_data = await post.findOne({ _id : post_id }).exec();
-            if(!post_data){
-                res.status(401).json("Post : middleware : post don't exists ");
-            }
-            else{
-                req.post_data = post_data;
-            }
-        }
-        else{
-            res.status(404).json("Post Id not specified or not in the good format");
-        }
-        next();
-    }catch(err){
-        res.status(500).send('Internal Server Error');
+    if(post_id && mongoose.Types.ObjectId.isValid(post_id)){
+        req.post_data = await post.findOne({ _id : post_id }).exec();
     }
+    next();
 }
  
 // Need to verify if like exists - req.like_data

@@ -10,15 +10,16 @@ module.exports.like = async (req, res) => {
         l = new like(link);
             await l.save()
             .then(() => {         
-            res.status(201).send('Liked');   
+            res.status(200).send('Liked');   
         })
             .catch((err) => {
         });
     }
     else{
-        res.status(401).send("Already liked");
+        res.status(400).send("Already liked");
     }
 }
+
 
 module.exports.dislike = async (req, res) => {
     if(req.post_data && req.like_data){
@@ -28,17 +29,18 @@ module.exports.dislike = async (req, res) => {
         }
         await like.deleteMany(link)
         .then(() => {         
-            res.status(201).send('Disiked');   
+            res.status(200).send('Disliked');   
         })
         .catch((err) => {
             res.status(500).send('Internal Server Error');
         });
     }
     else{
-        res.status(401).send("You don't like");
+        res.status(400).send("Already disliked");
     }
 }
 
+// Need to test if the 
 module.exports.doIlike = async (req, res) => {
     const { post_id } = req.body;
     if(req.post_data){
@@ -50,8 +52,10 @@ module.exports.doIlike = async (req, res) => {
             res.status(200).send("Disliked");
         }
     }
+    else{
+        res.status(400).send("Post don't exists");
+    }
 }
-
 
 //                              //
 //-------- MiddleWares----------//

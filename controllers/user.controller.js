@@ -68,7 +68,7 @@ module.exports.modifyPassword = async (req, res) => {
         const data = await user.findOne({_id : req.user._id}).select("mail nickname password").exec();
         if(await bcrypt.compare(password, data.password)){
             await user.updateOne({_id : req.user._id}, {password : newpassword});
-            res.status(201).send("Password modified");
+            res.status(200).send("Password modified");
         }
         else{
             res.status(401).send('Wrong password : ancient');

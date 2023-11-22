@@ -8,7 +8,6 @@ module.exports.createTags = async(req, res, next) => {
             t = new tag({ name : element , quantity : 1 })
             t.save()
             .then(() => {
-                
             })
             .catch((err) => {
                 tag.findOneAndUpdate({name : element}, {$inc : {quantity : 1}}).exec();
