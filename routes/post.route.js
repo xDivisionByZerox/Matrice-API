@@ -29,5 +29,11 @@ router.post("/disable", authentificateToken,
                         postController.verifyExists,
                         postController.verifyOwner,
                         postController.disablePost);
-,
+
+router.post("/profile", userController.verifyExists
+                      , postController.verifyExists
+                      , postController.profile);
+
+router.post("/group",   postController.group);
+
 module.exports = router;

@@ -193,6 +193,12 @@ module.exports.buyTransaction = async(req, res, next) => {
                 req.validate_transaction = false;
             }
         }
+        else{
+            req.validate_transaction = false;
+        }
+    }
+    else{
+        req.validate_transaction = false;
     }
     next();
 }

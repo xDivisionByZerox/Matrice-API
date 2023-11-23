@@ -86,6 +86,59 @@ module.exports.disablePost = async(req, res) => {
     }
 }
 
+// Send ten last user posts
+module.exports.profile = async(req, res) => {
+    if(req.user_data){
+        if(req.post_data){
+            posts_data = await post.find({
+                creation: { $lt: new Date(req.post_data.creation) },
+                $or: [
+                    { ownerId: req.user_data._id },
+                    { creatorId: req.user_data._id }
+                ]
+            })
+            .sort({creation : -1})
+            .limit(10)
+            .exec();
+            res.status(200).json(posts_data)
+        }
+        else{
+            posts_data = await post.find({
+                $or: [
+                    { ownerId: req.user_data._id },
+                    { creatorId: req.user_data._id }
+                ]
+            })
+            .sort({creation : -1})
+            .limit(10)
+            .exec();
+            res.status(200).json(posts_data)
+        }
+    }
+    else{
+        res.status(400).send("User don't exists : user_id");
+    }
+}
+
+// Send posts attached to ids stored in list - posts_id
+module.exports.group = async(req, res) => {
+    const {posts_id} = req.body;
+    if(posts_id && posts_id.length > 0){
+        const areAllIdsValid = posts_id.every((id) => mongoose.Types.ObjectId.isValid(id));
+        if(areAllIdsValid){
+            const posts_data = await post.find({ _id: { $in: posts_id } });
+            res.status(200).json(posts_data);
+        }
+        else{
+            res.status(400).send("Post id not in good format");
+        }
+    }
+    else{
+        res.status(400).send("posts_id not specified or no ids");
+    }
+}
+
+
 //                              //
 //-------- MiddleWares----------//
 //                              //
