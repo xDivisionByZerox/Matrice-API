@@ -2,17 +2,13 @@ const post =  require("../models/post.model");
 const mongoose = require('mongoose');
 
 module.exports.getPost = async(req, res) => {
-    const { post_id } = req.body;
-    try{
-        const data = await post.findOne({ _id: post_id }).exec();
-        if(data){
-            res.status(200).json(data);
+    if(req.user){
+        if(req.post_data){
+            res.status(200).json(req.post_data);
         }
-        else{
-            res.status(400).send('No post found : post_id');
+        else {
+            res.status(400).send("Post not found : post_id");
         }
-    }catch(err){
-        res.status(500).send('Internal Server Error');
     }
 }
 

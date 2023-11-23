@@ -7,7 +7,8 @@ const tagController = require("../controllers/tag.controller");
 const userController = require("../controllers/user.controller");
 const { authentificateToken } = require("../utils/auth.js");
 
-router.post("/", postController.getPost);
+router.post("/", postController.verifyExists,
+                 postController.getPost);
 
 router.post("/create", authentificateToken,
                        tagController.createTags,
