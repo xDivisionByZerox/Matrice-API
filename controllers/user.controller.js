@@ -6,7 +6,7 @@ const {generateAccessToken} = require("../utils/auth.js");
 
 module.exports.me = async (req, res) => {
     if(req.user){
-        user_data = user.findOne({ _id : req.user._id }).select("mail password").exec();
+        user_data = await user.findOne({ _id : req.user._id }).select("-password").exec();
         if(user_data){
             res.status(200).json(user_data);
         }
