@@ -202,7 +202,7 @@ module.exports.buyTransaction = async(req, res, next) => {
                 await user.findOneAndUpdate({ _id : req.user_token_data._id }, 
                                             { $inc : {coins : -( req.post_data.price * (1 + process.env.taxe))} });
                 await user.findOneAndUpdate({ _id : req.owner_data._id }, 
-                                            { $inc : {coins : ( req.post_data.price * (1 + process.env.taxe))} });
+                                            { $inc : {coins : req.post_data.price} });
                 req.validate_transaction = true;
             }
             else{
