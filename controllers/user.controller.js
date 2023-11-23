@@ -6,7 +6,13 @@ const {generateAccessToken} = require("../utils/auth.js");
 
 module.exports.me = async (req, res) => {
     if(req.user){
-        res.status(200).json(req.user);
+        user_data = user.findOne().select("mail password").exec();
+        if(user_data){
+            res.status(200).json(user_data);
+        }
+        else{
+            res.status(400).send("User not found : token");
+        }
     }
 }
 
