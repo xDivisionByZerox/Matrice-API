@@ -17,7 +17,7 @@ router.post('/login', userController.login);
 router.post('/signup', userController.signup);
 
 // Return user data by nickname
-router.post('/', userController.getById);
+router.post('/', userController.getByNickname);
 
 // Modify password - Take token
 router.post('/password',authentificateToken, 
@@ -26,5 +26,9 @@ router.post('/password',authentificateToken,
 // Modify user profile 
 router.post('/update',  authentificateToken,
                         userController.updateUser);
+
+//  Return user data by Id
+router.post('/byid', userController.verifyExists
+                   , userController.getById);
 
 module.exports = router;

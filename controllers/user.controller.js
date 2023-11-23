@@ -51,8 +51,8 @@ module.exports.login = async (req, res) => {
     }
 };
 
-// Get data from user : thanks to his id
-module.exports.getById = async (req, res) => {
+// Get data from user : thanks to his Nickname
+module.exports.getByNickname = async (req, res) => {
     const { nickname } = req.body;
     try{
         const data = await user.findOne({ nickname: nickname }).select('-password').exec();
@@ -64,6 +64,16 @@ module.exports.getById = async (req, res) => {
         }
     }catch(err){
         res.status(500).send('Internal Server Error');
+    }
+}
+
+// Get data from user : thanks to his id
+module.exports.getById = async (req, res) => {
+    if(req.user_data){
+        res.status(200).json(req.user_data);
+    }
+    else{
+        res.status(400).send("User don't exists : user_id");
     }
 }
 
