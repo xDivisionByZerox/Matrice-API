@@ -22,8 +22,9 @@ module.exports.view = async (req, res) => {
 //                              //
 //-------- MiddleWares----------//
 //                              //
-module.exports.verifyExists = async (req, res) => {
+module.exports.verifyExists = async (req, res, next) => {
     if(req.user && req.post_data){
-        req.view_data = view.findOne({ userId : req.user._id , postId : req.post_data._id });
+        req.view_data = await view.findOne({ userId : req.user._id , postId : req.post_data._id });
     }
+    next();
 };
