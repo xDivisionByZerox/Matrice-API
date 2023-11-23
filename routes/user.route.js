@@ -6,6 +6,10 @@ const userController = require("../controllers/user.controller")
 const { authentificateToken } = require("../utils/auth.js");
 
 
+// Me by token 
+router.post('/me',  authentificateToken, 
+                    userController.me);
+
 // Connect user - return token
 router.post('/login', userController.login);
 

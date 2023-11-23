@@ -56,7 +56,7 @@ const UserSchema = mongoose.Schema(
             type : mongoose.SchemaTypes.ObjectId,
             ref : "rank"
         },
-        // Number of subs he have
+        // Number of subs he have2
         subscribes : {
             type : Number,
             default : 0

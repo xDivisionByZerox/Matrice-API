@@ -4,6 +4,12 @@ const mongoose = require('mongoose');
 
 const {generateAccessToken} = require("../utils/auth.js");
 
+module.exports.me = async (req, res) => {
+    if(req.user){
+        res.status(200).json(req.user);
+    }
+}
+
 // Create user : signup in application
 module.exports.signup = (req, res) => {
     const u = new user(req.body);
@@ -149,6 +155,43 @@ module.exports.unSub = async(req, res, next) => {
         if(req.user_data){
             await user.findOneAndUpdate({ _id: user_id }, {$inc : {subscribes : -1 }});
             await user.findOneAndUpdate({ _id: req.user._id }, {$inc : { subscribed : -1 }});
+        }
+    }
+    next();
+}
+
+// MiddleWare who vrify the post exists - req.post_data - owner
+module.exports.verifyOwner = async(req, res, next) => {
+    if(req.post_data){
+        req.owner_data = user.findOne({_id : req.post_data.ownerId});
+    }
+    next();
+}
+
+//MiddleWare who vrify the user exists - need req.user.id
+module.exports.verifyUserToken = async(req, res, next) => {
+    if(req.user.id){
+        if(req.post_data){
+            req.user_token_data = user.findOne({_id : req.user._id});
+        }
+    }
+    next();
+}
+
+//MiddleWare who exchange coins between req.user and req.owner_data
+module.exports.buyTransaction = async(req, res, next) => {
+    if(req.post_data && req.owner_data && req.user_token_data){
+        if(req.user_token_data._id != req.post_data.ownerId){
+            if(req.user_token_data.coins >= ( req.post_data.price * (1 + process.env.taxe) )){
+                await user.findOneAndUpdate({ _id : req.user_token_data._id }, 
+                                            { $inc : {coins : -( req.post_data.price * (1 + process.env.taxe))} });
+                await user.findOneAndUpdate({ _id : req.owner_data._id }, 
+                                            { $inc : {coins : ( req.post_data.price * (1 + process.env.taxe))} });
+                req.validate_transaction = true;
+            }
+            else{
+                req.validate_transaction = false;
+            }
         }
     }
     next();
