@@ -2,13 +2,11 @@ const post =  require("../models/post.model");
 const mongoose = require('mongoose');
 
 module.exports.getPost = async(req, res) => {
-    if(req.user){
-        if(req.post_data){
-            res.status(200).json(req.post_data);
-        }
-        else {
-            res.status(400).send("Post not found : post_id");
-        }
+    if(req.post_data){
+        res.status(200).json(req.post_data);
+    }
+    else {
+        res.status(400).send("Post not found : post_id");
     }
 }
 
