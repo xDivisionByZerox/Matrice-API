@@ -22,9 +22,22 @@ module.exports.view = async (req, res) => {
 //                              //
 //-------- MiddleWares----------//
 //                              //
+
+// Verify user exists - 
 module.exports.verifyExists = async (req, res, next) => {
     if(req.user && req.post_data){
         req.view_data = await view.findOne({ userId : req.user._id , postId : req.post_data._id });
     }
     next();
 };
+
+// req.user(authenticate) - req.user_token_data (userController.verifyUserTokenThread) - req.thread_data (thread.verifyExists)
+module.exports.get100latest = async(req, res, next) => {
+    if(req.user && req.user_token_data && req.thread_data){
+        req.views_ids = await view.find({ userId : req.user_token_data._id})
+            .sort({creation : -1})
+            .limit(100)
+            .exec();
+    }
+    next();
+}

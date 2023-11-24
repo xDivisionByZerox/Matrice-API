@@ -186,13 +186,22 @@ module.exports.verifyOwner = async(req, res, next) => {
 
 //MiddleWare who vrify the user exists - need req.user.id
 module.exports.verifyUserToken = async(req, res, next) => {
-    if(req.user.id){
+    if(req.user._id){
         if(req.post_data){
-            req.user_token_data = user.findOne({_id : req.user._id});
+            req.user_token_data = await user.findOne({_id : req.user._id}).select('-password');
         }
     }
     next();
 }
+
+//MiddleWare who vrify the user exists - need req.user.id
+module.exports.verifyUserTokenThread = async(req, res, next) => {
+    if(req.user._id){
+        req.user_token_data = await user.findOne({_id : req.user._id}).select('-password');
+    }
+    next();
+}
+
 
 //MiddleWare who exchange coins between req.user and req.owner_data
 module.exports.buyTransaction = async(req, res, next) => {

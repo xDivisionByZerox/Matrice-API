@@ -10,6 +10,10 @@ const LikeSchema = mongoose.Schema(
         postId : {
             type : mongoose.SchemaTypes.ObjectId,
             required : true
+        },
+        creation : {
+            type : Date,
+            default : new Date()
         }
     }
 );

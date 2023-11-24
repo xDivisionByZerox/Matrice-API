@@ -24,27 +24,34 @@ module.exports.createPost = async(req, res) => {
 }
 // req.post_data(post) - req.owner_data(user) -  
 module.exports.buyPost = async(req, res) => {
-    if(req.post_data){
-        if(req.owner_data){
-            if(req.user_token_data._id != req.post_data.ownerId){
-                if(req.validate_transaction){
-                    await post.findOneAndUpdate({ _id : req.post_data._id}, {$set : {ownerId : req.user_token_data._id}});
-                    res.status(200).send('Post bought : success');
+    if(req.user){
+        if(req.post_data){
+            if(req.owner_data){
+                if(req.user_token_data){
+                    if(req.user_token_data._id != req.post_data.ownerId){
+                        if(req.validate_transaction){
+                            await post.findOneAndUpdate({ _id : req.post_data._id}, {$set : {ownerId : req.user_token_data._id}});
+                            res.status(200).send('Post bought : success');
+                        }
+                        else{
+                            res.status(400).send('Not enaugh coins');
+                        }
+                    }
+                    else{
+                        res.status(400).send('Already owned');
+                    }
                 }
                 else{
-                    res.status(400).send('Not enaugh coins');
+                    res.status(400).send('User no longer exists');
                 }
             }
             else{
-                res.status(400).send('Already owned');
+                res.status(400).send('Owner no longer exists');
             }
         }
         else{
-            res.status(400).send('Owner no longer exists');
+            res.status(400).send('No post found : post_id');
         }
-    }
-    else{
-        res.status(400).send('No post found : post_id');
     }
 }
 
@@ -173,5 +180,10 @@ module.exports.AddDislike = async(req, res, next) => {
     else{
         req.post_data = await post.findOne({_id : post_id});
     }
+    next();
+}
+
+// 
+module.exports.postsLikedViewed = async(req, res, next) => {
     next();
 }

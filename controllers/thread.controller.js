@@ -6,7 +6,7 @@ module.exports.createThread = async (req, res) => {
         if(req.user_token_data){
             if(!req.thread_data){
                 try {
-                    // TODO : Algo qui va ajouter des posts au thread
+                    // Algo qui ajoute des tags à tags
                     const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
                     const savedThread = await t.save();
                     res.status(201).json(savedThread);
@@ -30,7 +30,7 @@ module.exports.deleteThread = async (req, res) => {
             if(req.thread_data){
                 try {
                     await thread.findByIdAndDelete( req.thread_data._id );
-                    res.status(200).json({ message: 'Thread deleted successfully' });
+                    res.status(200).send({ message: 'Thread deleted successfully' });
                 } catch (error) {
                     res.status(500).json({ error: error.message });
                 }
@@ -46,21 +46,20 @@ module.exports.deleteThread = async (req, res) => {
 };
 
 module.exports.feedThread = async (req, res) => {
-    module.exports.deleteThread = async (req, res) => {
-        if(req.user){
-            if(req.user_token_data){
-                if(req.thread_data){
-                    // TODO : Algo qui va ajouter des posts au Thread
-                }
-                else{
-                    res.status(400).send("Thread don't exists");
-                }
+    if(req.user){
+        if(req.user_token_data){
+            if(req.thread_data){
+                console.log(req.likes_ids);
+                console.log(req.views_ids);
             }
             else{
-                res.status(400).send("User don't exists : token error");
+                res.status(400).send("Thread don't exists");
             }
         }
-    };
+        else{
+            res.status(400).send("User don't exists : token error");
+        }
+    }
 };
 
 //                              //
@@ -68,8 +67,9 @@ module.exports.feedThread = async (req, res) => {
 //                              //
 
 // Need req.user_token_data - userController.verifyUserToken
-module.exports.verifyExists = async (req, res) => {
+module.exports.verifyExists = async (req, res, next) => {
     if(req.user && req.user_token_data){
         req.thread_data = await thread.findOne({ name : req.user_token_data.mail });
     }
+    next();
 }
