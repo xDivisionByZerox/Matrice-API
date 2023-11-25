@@ -5,13 +5,27 @@ module.exports.createThread = async (req, res) => {
     if(req.user){
         if(req.user_token_data){
             if(!req.thread_data){
-                try {
-                    // Algo qui ajoute des tags à tags
-                    const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
-                    const savedThread = await t.save();
-                    res.status(201).json(savedThread);
-                } catch (error) {
-                    res.status(500).json({ error: error.message });
+                if(req.posts_data){
+                    console.log(req.posts_data);
+                    console.log(res);
+                    try {
+                        // Algo qui ajoute des tags à tags
+                        const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
+                        const savedThread = await t.save();
+                        res.status(201).json(savedThread);
+                    } catch (error) {
+                        res.status(500).json({ error: error.message });
+                    }
+                }
+                else {
+                    try {
+                        // Algo qui ajoute des tags à tags
+                        const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
+                        const savedThread = await t.save();
+                        res.status(201).json(savedThread);
+                    } catch (error) {
+                        res.status(500).json({ error: error.message });
+                    }
                 }
             }
             else{

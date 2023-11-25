@@ -137,7 +137,6 @@ module.exports.search = async(req, res) => {
                 .limit(req.body.users_id.length + 10)
                 .select("_id nickname picture")
                 .exec();
-                users_data = users_data.slice().sort(() => Math.random() - 0.5);
                 res.status(200).json(users_data);
             }
             else{
@@ -149,7 +148,6 @@ module.exports.search = async(req, res) => {
                 .limit(10)
                 .select("_id nickname picture")
                 .exec();
-                users_data = users_data.slice().sort(() => Math.random() - 0.5);
                 res.status(200).json(users_data);
             }
         }  

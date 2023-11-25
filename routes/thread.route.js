@@ -16,6 +16,9 @@ const postController = require("../controllers/post.controller.js");
 router.post('/create',  authentificateToken,                      // req.user
                         userController.verifyUserTokenThread,     // req.user_token_data
                         threadController.verifyExists,            // req.thread_data
+                        viewController.get100latest,              // req.views_ids
+                        likeController.get100latest,              // req.likes_ids
+                        postController.postsLikedViewed,          // posts_data
                         threadController.createThread);
 
 router.post('/delete', authentificateToken,                       // req.user
@@ -26,9 +29,6 @@ router.post('/delete', authentificateToken,                       // req.user
 router.post('/feed',   authentificateToken,                       // req.user
                        userController.verifyUserTokenThread,      // req.user_token_data
                        threadController.verifyExists,             // req.thread_data
-                       viewController.get100latest,               // req.views_ids
-                       likeController.get100latest,               // req.likes_ids
-                       postController.postsLikedViewed,           // posts_data
                        threadController.feedThread);
 
 module.exports = router;
