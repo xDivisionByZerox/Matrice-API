@@ -126,27 +126,30 @@ module.exports.updateUser = async(req, res) => {
 
 module.exports.search = async(req, res) => {
     if(req.user){
-        console.log(req);
         if(req.body.user_search){
             if(req.body.users_id){
-                const users_data = await user
+                var users_data = await user
                 .find({
                     nickname: { $regex: String(req.body.user_search) , $options: 'i' },
                     _id: { $nin: req.body.users_id }
                 })
                 .sort({ subscribes: -1, coins: -1 })
                 .limit(req.body.users_id.length + 10)
+                .select("_id nickname picture")
                 .exec();
+                users_data = users_data.slice().sort(() => Math.random() - 0.5);
                 res.status(200).json(users_data);
             }
             else{
-                const users_data = await user
+                var users_data = await user
                 .find({
                     nickname: { $regex: req.user_search, $options: 'i' }
                 })
                 .sort({ subscribes: -1, coins: -1 })
                 .limit(10)
+                .select("_id nickname picture")
                 .exec();
+                users_data = users_data.slice().sort(() => Math.random() - 0.5);
                 res.status(200).json(users_data);
             }
         }  
