@@ -53,3 +53,9 @@ module.exports.verifyExists = async (req,res,next) => {
     }
     next();
 }
+
+module.exports.getTokenFollowsIds = async (req,res,next) => {
+    if(req.user){
+    }
+    next();
+}

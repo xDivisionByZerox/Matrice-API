@@ -124,6 +124,39 @@ module.exports.updateUser = async(req, res) => {
     }
 }
 
+module.exports.search = async(req, res) => {
+    if(req.user){
+        console.log(req);
+        if(req.body.user_search){
+            if(req.body.users_id){
+                const users_data = await user
+                .find({
+                    nickname: { $regex: String(req.body.user_search) , $options: 'i' },
+                    _id: { $nin: req.body.users_id }
+                })
+                .sort({ subscribes: -1, coins: -1 })
+                .limit(req.body.users_id.length + 10)
+                .exec();
+                res.status(200).json(users_data);
+            }
+            else{
+                const users_data = await user
+                .find({
+                    nickname: { $regex: req.user_search, $options: 'i' }
+                })
+                .sort({ subscribes: -1, coins: -1 })
+                .limit(10)
+                .exec();
+                res.status(200).json(users_data);
+            }
+        }  
+        else{
+            res.status(400).send("Aucun mots clés entrés");
+        }
+    }
+}
+
+
 //                              //
 //-------- MiddleWares----------//
 //                              //
@@ -202,7 +235,6 @@ module.exports.verifyUserTokenThread = async(req, res, next) => {
     next();
 }
 
-
 //MiddleWare who exchange coins between req.user and req.owner_data
 module.exports.buyTransaction = async(req, res, next) => {
     if(req.post_data && req.owner_data && req.user_token_data){
@@ -224,6 +256,20 @@ module.exports.buyTransaction = async(req, res, next) => {
     }
     else{
         req.validate_transaction = false;
+    }
+    next();
+}
+
+//
+module.exports.getTokenFollowsData = async (req,res,next) => {
+    if(req.user && req.follows_ids){
+    }
+    next();
+}
+
+// Middleware - Get users in array users_ids
+module.exports.getDataUsersId = async (req,res,next) => {
+    if(req.user && req.users_id){        
     }
     next();
 }

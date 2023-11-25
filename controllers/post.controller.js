@@ -183,7 +183,25 @@ module.exports.AddDislike = async(req, res, next) => {
     next();
 }
 
-// 
+// View : Like --> get100latest each --- care this middleware return req.posts_data
 module.exports.postsLikedViewed = async(req, res, next) => {
+    if(req.views_ids && req.likes_ids){
+        req.ids = (req.views_ids).concat(req.likes_ids);
+        req.ids = (req.ids).map(document => document.postId);
+    }
+    else if(req.views_ids){
+        req.ids = (req.views_ids).map(document => document.postId);
+    }
+    else if(req.likes_ids){
+        req.ids = (req.likes_ids).map(document => document.postId);
+    }
+    if(req.ids){
+        try{
+            req.posts_data = await post.find({ _id : { $in: req.ids } });
+        }       
+        catch(err){
+            console.log(err);
+        }
+    }
     next();
 }

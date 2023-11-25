@@ -30,9 +30,9 @@ module.exports.deleteThread = async (req, res) => {
             if(req.thread_data){
                 try {
                     await thread.findByIdAndDelete( req.thread_data._id );
-                    res.status(200).send({ message: 'Thread deleted successfully' });
+                    res.status(200).send('Thread deleted successfully');
                 } catch (error) {
-                    res.status(500).json({ error: error.message });
+                    res.status(500).json("error");
                 }
             }
             else{
@@ -49,8 +49,6 @@ module.exports.feedThread = async (req, res) => {
     if(req.user){
         if(req.user_token_data){
             if(req.thread_data){
-                console.log(req.likes_ids);
-                console.log(req.views_ids);
             }
             else{
                 res.status(400).send("Thread don't exists");

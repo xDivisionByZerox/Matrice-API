@@ -56,12 +56,12 @@ const UserSchema = mongoose.Schema(
             type : mongoose.SchemaTypes.ObjectId,
             ref : "rank"
         },
-        // Number of subs he have2
+        // Number of followers he have
         subscribes : {
             type : Number,
             default : 0
         },
-        // Number of people he subscribe
+        // Number of people he follows
         subscribed : {
             type : Number,
             default : 0

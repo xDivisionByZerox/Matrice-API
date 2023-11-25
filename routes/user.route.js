@@ -2,13 +2,13 @@
 const router = require("express").Router();
 
 // Call controller
-const userController = require("../controllers/user.controller")
+const userController = require("../controllers/user.controller");
 const { authentificateToken } = require("../utils/auth.js");
 
 
 // Me by token 
-router.post('/me',  authentificateToken, 
-                    userController.me);
+router.post('/me', authentificateToken, 
+                   userController.me);
 
 // Connect user - return token
 router.post('/login', userController.login);
@@ -20,8 +20,8 @@ router.post('/signup', userController.signup);
 router.post('/', userController.getByNickname);
 
 // Modify password - Take token
-router.post('/password',authentificateToken, 
-                        userController.modifyPassword);
+router.post('/password', authentificateToken, 
+                         userController.modifyPassword);
 
 // Modify user profile 
 router.post('/update',  authentificateToken,
@@ -30,5 +30,9 @@ router.post('/update',  authentificateToken,
 //  Return user data by Id
 router.post('/byid', userController.verifyExists
                    , userController.getById);
+
+// Search user
+router.post('/search', authentificateToken
+                     , userController.search);
 
 module.exports = router;
