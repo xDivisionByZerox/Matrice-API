@@ -41,7 +41,30 @@ module.exports.unfollow = async (req, res) => {
             res.status(400).json("UnFollow : user don't exist");
         }    
     }
-};  
+};
+
+module.exports.followed = async (req, res) => {
+    if(req.user){
+        if(req.users_data){
+            res.status(200).json(req.users_data);
+        }
+        else{
+            res.status(400).json({});
+        }
+    }
+};
+
+module.exports.followers = async (req, res) => {
+    if(req.user){   
+        if(req.users_data){
+            res.status(200).json(req.users_data);
+        }
+        else{
+            res.status(200).json({});
+        }
+    }
+};
+
 module.exports.doIfollow = async (req, res) => {
     if(req.user){
         if(req.user_data){
@@ -65,7 +88,7 @@ module.exports.doIfollow = async (req, res) => {
 //                              //
 // Verify if user exists before - userController.verifyExists
 module.exports.verifyExists = async (req,res,next) => {
-    if(req.user_data){
+    if(req.user._id && req.user_data){
         link = {
             userA : req.user._id,
             userB : req.body.user_id,
@@ -75,8 +98,46 @@ module.exports.verifyExists = async (req,res,next) => {
     next();
 }
 
-module.exports.getTokenFollowsIds = async (req,res,next) => {
+module.exports.getTokenFollowsIds = async (req, res, next) => {
     if(req.user){
+    }
+    next();
+}
+
+module.exports.Followed10others = async (req, res, next) => {
+    const {users_id} = req.body
+    if(req.user){
+        if(users_id && users_id.length > 0){
+            const areAllIdsValid = users_id.every((id) => mongoose.Types.ObjectId.isValid(id));
+            req.followed_ids = await follower.find({userA : req.user._id, userB : { $nin: areAllIdsValid }})
+                                   .limit(areAllIdsValid.length + 10);
+        }
+        else {
+            req.followed_ids = await follower.find({userA : req.user._id})
+                                   .limit(10);
+        }
+        if(req.followed_ids && req.followed_ids.length > 0){
+            req.ids = (req.followed_ids).map(document => document.userB);
+        }
+    }
+    next();
+}
+
+module.exports.Follower10others = async (req, res, next) => {
+    const {users_id} = req.body
+    if(req.user){
+        if(users_id && users_id.length > 0){
+            const areAllIdsValid = users_id.every((id) => mongoose.Types.ObjectId.isValid(id));
+            req.followed_ids = await follower.find({userB : req.user._id, userA : { $nin: areAllIdsValid }})
+                                   .limit(areAllIdsValid.length + 10);
+        }
+        else {
+            req.followed_ids = await follower.find({userB : req.user._id})
+                                   .limit(10);
+        }
+        if(req.followed_ids && req.followed_ids.length > 0){
+            req.ids = (req.followed_ids).map(document => document.userA);
+        }
     }
     next();
 }

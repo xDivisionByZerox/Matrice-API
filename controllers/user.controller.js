@@ -263,16 +263,15 @@ module.exports.buyTransaction = async(req, res, next) => {
     next();
 }
 
-//
-module.exports.getTokenFollowsData = async (req,res,next) => {
-    if(req.user && req.follows_ids){
-    }
-    next();
-}
-
 // Middleware - Get users in array users_ids
 module.exports.getDataUsersId = async (req,res,next) => {
-    if(req.user && req.users_id){        
+    if(req.user && req.ids){
+        try{
+            req.users_data = await user.find({ _id : { $in: req.ids } });
+        }       
+        catch(err){
+            console.log(err);
+        }
     }
     next();
 }

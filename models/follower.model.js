@@ -10,6 +10,10 @@ const FollowerSchema = mongoose.Schema(
         userB : {
             type : mongoose.SchemaTypes.ObjectId,
             require : true
+        },
+        creation : {
+            type : Date,
+            default : new Date()
         }
     }
 );
