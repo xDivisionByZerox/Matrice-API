@@ -11,16 +11,18 @@ module.exports.getPost = async(req, res) => {
 }
 
 module.exports.createPost = async(req, res) => {
-    const p = new post(req.body);
-    p.creatorId = req.user._id;
-    p.ownerId = req.user._id;
-    p.save()
+    if(req.user) {
+        const p = new post(req.body);
+        p.creatorId = req.user._id;
+        p.ownerId = req.user._id;
+        p.save()
         .then(() => {
             res.status(200).send("Posted : success");
         })
         .catch((err) => {
             res.status(401).send("Invalid entries");
         });
+    }
 }
 // req.post_data(post) - req.owner_data(user) -  
 module.exports.buyPost = async(req, res) => {
