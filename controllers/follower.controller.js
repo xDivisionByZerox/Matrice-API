@@ -108,7 +108,7 @@ module.exports.Followed10others = async (req, res, next) => {
     const {users_id} = req.body
     if(req.user){
         if(users_id && users_id.length > 0){
-            const areAllIdsValid = users_id.every((id) => mongoose.Types.ObjectId.isValid(id));
+            const areAllIdsValid = users_id.filter((id) => mongoose.Types.ObjectId.isValid(id));
             req.followed_ids = await follower.find({userA : req.user._id, userB : { $nin: areAllIdsValid }})
                                    .limit(areAllIdsValid.length + 10);
         }
@@ -127,7 +127,7 @@ module.exports.Follower10others = async (req, res, next) => {
     const {users_id} = req.body
     if(req.user){
         if(users_id && users_id.length > 0){
-            const areAllIdsValid = users_id.every((id) => mongoose.Types.ObjectId.isValid(id));
+            const areAllIdsValid = users_id.filter((id) => mongoose.Types.ObjectId.isValid(id));
             req.followed_ids = await follower.find({userB : req.user._id, userA : { $nin: areAllIdsValid }})
                                    .limit(areAllIdsValid.length + 10);
         }

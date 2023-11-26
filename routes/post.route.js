@@ -40,4 +40,7 @@ router.post("/profile", userController.verifyExists
 
 router.post("/group",   postController.group);
 
+router.post("/comment", postController.verifyExists     // req.body.post_id     ----> req.post_data
+                      , postController.comment);        // Return 10 comments
+
 module.exports = router;

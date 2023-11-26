@@ -147,6 +147,39 @@ module.exports.group = async(req, res) => {
     }
 }
 
+module.exports.comment = async(req, res) => {
+    const { posts_id } = req.body;
+    if(req.post_data){
+        if(posts_id && posts_id.length > 0){
+            areAllIdsValid = posts_id.filter((id) => mongoose.Types.ObjectId.isValid(id));
+            try{
+                const comments = await post.find({ motherId : req.post_data._id, _id : { $nin: posts_id }})
+                                            .sort({ likes : 1 } )
+                                            .limit(areAllIdsValid.length + 10);
+                res.status(200).json(comments);
+            }
+            catch(err){
+                console.log(err);
+                res.status(500).send("Error");
+            }
+        }
+        else{
+            try{
+                const comments = await post.find({ motherId : req.post_data._id })
+                                        .sort({ likes : 1 } )
+                                        .limit(10);         
+                res.status(200).json(comments);
+            }
+            catch(err){
+                res.status(500).send("Error");
+            }
+        }
+    }
+    else{
+        res.status(400).send("Post doesn't exists : comment")
+    }
+}
+
 
 //                              //
 //-------- MiddleWares----------//
