@@ -46,10 +46,10 @@ module.exports.doIfollow = async (req, res) => {
     if(req.user){
         if(req.user_data){
             if(req.follower_data){
-                res.status(200).json("Followed");
+                res.status(200).json({Followed : true});
             }
             else {
-                res.status(200).json("UnFollowed");
+                res.status(200).json({Followed : false});
             }
         }
         else{
