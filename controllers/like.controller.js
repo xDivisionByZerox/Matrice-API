@@ -46,10 +46,10 @@ module.exports.doIlike = async (req, res) => {
     if(req.post_data){
         const like_data = await like.findOne({ userId : req.user._id, postId : post_id}).exec();
         if(like_data){
-            res.status(200).send("Liked");
+            res.status(200).json({liked : true});
         }
         else{
-            res.status(200).send("Disliked");
+            res.status(200).json({liked : false});
         }
     }
     else{

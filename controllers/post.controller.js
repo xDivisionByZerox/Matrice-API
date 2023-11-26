@@ -12,18 +12,24 @@ module.exports.getPost = async(req, res) => {
 
 module.exports.createPost = async(req, res) => {
     if(req.user) {
-        const p = new post(req.body);
-        p.creatorId = req.user._id;
-        p.ownerId = req.user._id;
-        p.save()
-        .then(() => {
-            res.status(200).send("Posted : success");
-        })
-        .catch((err) => {
+        if(req.post_validate){
+            req.post_tosave.creatorId = req.user._id;
+            req.post_tosave.ownerId = req.user._id;
+            await req.post_tosave.save()
+            .then(() => {
+                res.status(200).send("Posted : success");
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(401).send("Invalid entries");
+            });
+        }
+        else{
             res.status(401).send("Invalid entries");
-        });
+        }
     }
 }
+
 // req.post_data(post) - req.owner_data(user) -  
 module.exports.buyPost = async(req, res) => {
     if(req.user){
@@ -204,6 +210,34 @@ module.exports.postsLikedViewed = async(req, res, next) => {
         catch(err){
             console.log(err);
         }
+    }
+    next();
+}
+
+// Validate post
+module.exports.verifyModelPost = async(req, res, next) => {
+    if(req.body.motherId && mongoose.Types.ObjectId.isValid(req.body.motherId)){
+        p = new post(req.body);
+        if(p.validate()){
+            req.post_validate = true;
+            req.post_tosave = p; 
+        }
+    }
+    next();
+}
+
+// Add comment to the motherId comment
+module.exports.addComment = async(req, res, next) => {
+    if(req.post_validate && req.body.motherId && mongoose.Types.ObjectId.isValid(req.body.motherId)){
+        try{
+            await post.findOneAndUpdate({ _id : req.body.motherId}, {$inc : {comments : 1}});
+        }
+        catch(err) {
+            console.log(err);
+        }
+    }
+    else {
+        req.body.motherId = null;
     }
     next();
 }

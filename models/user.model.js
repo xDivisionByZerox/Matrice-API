@@ -90,14 +90,16 @@ UserSchema.post('save', function(doc, next  ) {
 // Bcrypt the password
 UserSchema.pre('save', function(next) {
     // Encrypt the password before writing it in database
-    bcrypt
-    .hash(this.password, Number(process.env.salt_round))
-    .then(hash => {
-        this.password = hash;
-        this.birthday = Date(this.birthday)
-        next();
-    })
-    .catch(err => console.error(err.message))
+    if(this.password){
+        bcrypt
+        .hash(this.password, Number(process.env.salt_round))
+        .then(hash => {
+            this.password = hash;
+            this.birthday = Date(this.birthday)
+            next();
+        })
+        .catch(err => console.error(err.message))
+    }
 });
 
 // Bcrypt the new password

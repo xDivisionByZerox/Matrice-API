@@ -12,6 +12,9 @@ router.post("/", postController.verifyExists,
 
 router.post("/create", authentificateToken,
                        tagController.createTags,
+                       postController.verifyModelPost,
+                       postController.addComment,
+                       userController.addPost,
                        postController.createPost);
 
 router.post("/buy", authentificateToken,

@@ -203,8 +203,10 @@ module.exports.unSub = async(req, res, next) => {
     if(req.follower_data){
         const { user_id } = req.body;
         if(req.user_data){
-            await user.findOneAndUpdate({ _id: user_id }, {$inc : {subscribes : -1 }});
             await user.findOneAndUpdate({ _id: req.user._id }, {$inc : { subscribed : -1 }});
+        }
+        if(user_id){
+            await user.findOneAndUpdate({ _id: user_id }, {$inc : {subscribes : -1 }});
         }
     }
     next();
@@ -271,6 +273,16 @@ module.exports.getTokenFollowsData = async (req,res,next) => {
 // Middleware - Get users in array users_ids
 module.exports.getDataUsersId = async (req,res,next) => {
     if(req.user && req.users_id){        
+    }
+    next();
+}
+
+//
+module.exports.addPost = async (req, res, next) => {
+    if(req.user){
+        if(req.post_validate){
+            await user.findOneAndUpdate({ _id: req.user._id }, {$inc : { posts : 1 }});
+        }
     }
     next();
 }
