@@ -18,6 +18,7 @@ module.exports.me = async (req, res) => {
 
 // Create user : signup in application
 module.exports.signup = (req, res) => {
+    if(req.body.birthday){req.body.birthday = new Date(req.body.birthday)}
     const u = new user(req.body);
     // Save the user object to the database
     u.save()

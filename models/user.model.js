@@ -95,7 +95,6 @@ UserSchema.pre('save', function(next) {
         .hash(this.password, Number(process.env.salt_round))
         .then(hash => {
             this.password = hash;
-            this.birthday = Date(this.birthday)
             next();
         })
         .catch(err => console.error(err.message))
