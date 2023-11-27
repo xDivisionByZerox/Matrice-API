@@ -1,4 +1,5 @@
 const follower = require('../models/follower.model');
+const { default: mongoose } = require('mongoose');
 
 module.exports.follow = async (req, res) => {
     if(req.user){
