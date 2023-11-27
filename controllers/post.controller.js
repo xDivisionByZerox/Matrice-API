@@ -249,12 +249,10 @@ module.exports.postsLikedViewed = async(req, res, next) => {
 
 // Validate post
 module.exports.verifyModelPost = async(req, res, next) => {
-    if(req.body.motherId && mongoose.Types.ObjectId.isValid(req.body.motherId)){
-        p = new post(req.body);
-        if(p.validate()){
-            req.post_validate = true;
-            req.post_tosave = p; 
-        }
+    p = new post(req.body);
+    if(p.validate()){
+        req.post_validate = true;
+        req.post_tosave = p; 
     }
     next();
 }
