@@ -54,7 +54,6 @@ const UserSchema = mongoose.Schema(
         },
         rank : {
             type : Number,
-            ref : "rank",
             default : 0
         },
         // Number of followers he have
