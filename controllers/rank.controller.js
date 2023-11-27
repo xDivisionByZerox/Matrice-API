@@ -25,12 +25,34 @@ module.exports.get = async (req, res) => {
     }
 };
 
+
+module.exports.buy = async (req, res) => {
+    if(req.user){
+        if(req.rank_data){
+            if(req.user_token_data){
+                if(req.validate_transaction){
+
+                }
+                else{
+                    res.status(400).send("Achat refusé : transaction user coins");    
+                }
+            }
+            else{
+                res.status(400).send("User don't exists : token");
+            }
+        }
+        else{
+            res.status(400).send("Rank don't exists : rank_id");
+        }
+    }
+};
+
 //                              //
 //-------- MiddleWares----------//
 //                              //
 module.exports.verifyExists = async (req, res, next) => {
     const { rank_id } = req.body;
-    if(rank_id){
+    if(rank_id && mongoose.Types.ObjectId.isValid(rank_id)){
         try{
             req.rank_data = await rank.findOne( { _id : rank_id} );
         }

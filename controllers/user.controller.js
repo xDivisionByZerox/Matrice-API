@@ -243,11 +243,16 @@ module.exports.buyTransaction = async(req, res, next) => {
     if(req.post_data && req.owner_data && req.user_token_data){
         if(req.user_token_data._id != req.post_data.ownerId){
             if(req.user_token_data.coins >= ( req.post_data.price * (1 + process.env.taxe) )){
-                await user.findOneAndUpdate({ _id : req.user_token_data._id }, 
-                                            { $inc : {coins : -( req.post_data.price * (1 + process.env.taxe))} });
-                await user.findOneAndUpdate({ _id : req.owner_data._id }, 
-                                            { $inc : {coins : req.post_data.price} });
-                req.validate_transaction = true;
+                try{
+                    await user.findOneAndUpdate({ _id : req.user_token_data._id }, 
+                        { $inc : {coins : -( req.post_data.price * (1 + process.env.taxe))} });
+                    await user.findOneAndUpdate({ _id : req.owner_data._id }, 
+                        { $inc : {coins : req.post_data.price} });
+                    req.validate_transaction = true;
+                }
+                catch(err) {
+                    req.validate_transaction = false;
+                }
             }
             else{
                 req.validate_transaction = false;
@@ -286,4 +291,21 @@ module.exports.addPost = async (req, res, next) => {
     next();
 }
 
-// req.user_token_data ---
+// req.user_token_data --- 
+module.exports.buyRankTransaction = async(req, res, next) => {
+    if(req.user && req.user_token_data && req.rank_data){
+        if((req.user_token_data.coins >= req.rank_data.price) ){
+            try{
+                
+                req.validate_transaction = true;
+            }
+            catch(err){
+                req.validate_transaction = false;
+            }
+        }
+        else{
+            req.validate_transaction = false;
+        }
+    }
+    next();
+}

@@ -53,8 +53,9 @@ const UserSchema = mongoose.Schema(
             required : true
         },
         rank : {
-            type : mongoose.SchemaTypes.ObjectId,
-            ref : "rank"
+            type : Number,
+            ref : "rank",
+            default : 0
         },
         // Number of followers he have
         subscribes : {
@@ -83,7 +84,7 @@ const UserSchema = mongoose.Schema(
 );
 
 // Fire function after doc saved in base - coins post can be modified here
-UserSchema.post('save', function(doc, next  ) {
+UserSchema.post('save', function(doc, next) {
     next();
 });
 
