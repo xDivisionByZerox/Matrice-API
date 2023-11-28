@@ -5,3 +5,5 @@ npm install jsonwebtoken
 npm install validator
 npm install bcrypt --save
 npm install cors
+
+npm install axios mongoose bcrypt faker dotenv
