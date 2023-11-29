@@ -7,3 +7,4 @@ npm install bcrypt --save
 npm install cors
 
 npm install axios mongoose bcrypt faker dotenv
+npm install faker

@@ -7,9 +7,7 @@ module.exports.createThread = async (req, res) => {
             if(!req.thread_data){
                 if(req.posts_data){
                     console.log(req.posts_data);
-                    console.log(res);
                     try {
-                        // Algo qui ajoute des tags à tags
                         const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
                         const savedThread = await t.save();
                         res.status(201).json(savedThread);
@@ -19,7 +17,6 @@ module.exports.createThread = async (req, res) => {
                 }
                 else {
                     try {
-                        // Algo qui ajoute des tags à tags
                         const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
                         const savedThread = await t.save();
                         res.status(201).json(savedThread);

@@ -52,7 +52,7 @@ db.once('open', async () => {
       password: faker.internet.password(),
       lastname: faker.name.lastName(),
       firstname: faker.name.firstName(),
-      picture: picture,
+      picture: faker.internet.avatar(),
       bio: faker.lorem.sentence(),
       birthday: generateRandomDOB(),
       rank: null,
@@ -63,12 +63,13 @@ db.once('open', async () => {
       creation: new Date(),
     });
 
-    await user.save();
+  await user.save();
     users.push(user);
 
 // Stock les combinaisons mail/mdp
     userCredentials.push({ email: user.mail, password: user.password });
   }
+
 
  // Nombre de posts pour chaque user
   const generateRandomPosts = () => Math.floor(Math.random() * 10) + 1;
