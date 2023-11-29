@@ -12,9 +12,10 @@ module.exports.getPost = async(req, res) => {
 
 module.exports.createPost = async(req, res) => {
     if(req.user) {
-        req.post_tosave.creatorId = req.user._id;
-        req.post_tosave.ownerId = req.user._id;
-        await req.post_tosave.save()
+        p = new post(req.body);
+        p.creatorId = req.user._id;
+        p.ownerId = req.user._id;
+        await p.save()
         .then(() => {
             res.status(200).send("Posted : success");
         })
