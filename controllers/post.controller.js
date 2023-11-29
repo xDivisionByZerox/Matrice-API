@@ -105,7 +105,7 @@ module.exports.profile = async(req, res) => {
                     { ownerId: req.user_data._id },
                     { creatorId: req.user_data._id }
                 ],
-                motherId: { $ne: null }
+                motherId : null 
             })
             .sort({creation : -1})
             .limit(10)
@@ -118,7 +118,7 @@ module.exports.profile = async(req, res) => {
                     { ownerId: req.user_data._id },
                     { creatorId: req.user_data._id }
                 ],
-                motherId: { $ne: null }
+                motherId : null 
             })
             .sort({creation : -1})
             .limit(10)
