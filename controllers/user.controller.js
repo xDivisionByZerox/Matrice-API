@@ -284,7 +284,7 @@ module.exports.getDataUsersId = async (req,res,next) => {
 
 //
 module.exports.addPost = async (req, res, next) => {
-    if(req.user && req.body.motherId && req.body.motherId != null){
+    if(req.user && req.body.motherId){
         if(req.post_validate){
             await user.findOneAndUpdate({ _id: req.user._id }, {$inc : { posts : 1 }});
         }

@@ -251,6 +251,9 @@ module.exports.postsLikedViewed = async(req, res, next) => {
 
 // Validate post
 module.exports.verifyModelPost = async(req, res, next) => {
+    p.creatorId = req.user._id;
+    p.ownerId = req.user._id;
+    if(req.body.motherId) { p.ownerId = req.body.motherId }
     p = new post(req.body);
     if(p.validate()){
         req.post_validate = true;
@@ -261,16 +264,18 @@ module.exports.verifyModelPost = async(req, res, next) => {
 
 // Add comment to the motherId comment
 module.exports.addComment = async(req, res, next) => {
-    if(req.post_validate && req.body.motherId){
-        try{
-            await post.findOneAndUpdate({ _id : req.body.motherId}, {$inc : {comments : 1}});
+    if(req.user){
+        if(req.post_validate && req.body.motherId){
+            try{
+                await post.findOneAndUpdate({ _id : req.body.motherId}, {$inc : {comments : 1}});
+            }
+            catch(err) {
+                console.log(err);
+            }
         }
-        catch(err) {
-            console.log(err);
+        else {
+            req.body.motherId = null;
         }
-    }
-    else {
-        req.body.motherId = null;
     }
     next();
 }
