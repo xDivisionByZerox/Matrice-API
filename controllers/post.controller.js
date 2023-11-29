@@ -261,7 +261,7 @@ module.exports.verifyModelPost = async(req, res, next) => {
 
 // Add comment to the motherId comment
 module.exports.addComment = async(req, res, next) => {
-    if(req.post_validate && req.body.motherId && mongoose.Types.ObjectId.isValid(req.body.motherId)){
+    if(req.post_validate && req.body.motherId){
         try{
             await post.findOneAndUpdate({ _id : req.body.motherId}, {$inc : {comments : 1}});
         }

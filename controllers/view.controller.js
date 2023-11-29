@@ -33,7 +33,7 @@ module.exports.verifyExists = async (req, res, next) => {
 
 // req.user(authenticate) - req.user_token_data (userController.verifyUserTokenThread) - req.thread_data (thread.verifyExists)
 module.exports.get100latest = async(req, res, next) => {
-    if(req.user && req.user_token_data && req.thread_data){
+    if(req.user && req.user_token_data && !req.thread_data){
         req.views_ids = await view.find({ userId : req.user_token_data._id})
             .sort({creation : -1})
             .limit(100)
