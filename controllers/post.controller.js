@@ -12,21 +12,16 @@ module.exports.getPost = async(req, res) => {
 
 module.exports.createPost = async(req, res) => {
     if(req.user) {
-        if(req.post_validate){
-            req.post_tosave.creatorId = req.user._id;
-            req.post_tosave.ownerId = req.user._id;
-            await req.post_tosave.save()
-            .then(() => {
-                res.status(200).send("Posted : success");
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(401).send("Invalid entries");
-            });
-        }
-        else{
+        req.post_tosave.creatorId = req.user._id;
+        req.post_tosave.ownerId = req.user._id;
+        await req.post_tosave.save()
+        .then(() => {
+            res.status(200).send("Posted : success");
+        })
+        .catch((err) => {
+            console.log(err);
             res.status(401).send("Invalid entries");
-        }
+        });
     }
 }
 
