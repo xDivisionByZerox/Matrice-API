@@ -104,7 +104,8 @@ module.exports.profile = async(req, res) => {
                 $or: [
                     { ownerId: req.user_data._id },
                     { creatorId: req.user_data._id }
-                ]
+                ],
+                motherId: { $ne: null }
             })
             .sort({creation : -1})
             .limit(10)
@@ -116,7 +117,8 @@ module.exports.profile = async(req, res) => {
                 $or: [
                     { ownerId: req.user_data._id },
                     { creatorId: req.user_data._id }
-                ]
+                ],
+                motherId: { $ne: null }
             })
             .sort({creation : -1})
             .limit(10)
