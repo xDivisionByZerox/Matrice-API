@@ -17,6 +17,7 @@ module.exports.createPost = async(req, res) => {
         p.ownerId = req.user._id;
         await p.save()
         .then(() => {
+            
             res.status(200).send("Posted : success");
         })
         .catch((err) => {
@@ -258,19 +259,17 @@ module.exports.verifyModelPost = async(req, res, next) => {
     next();
 }
 
-// Add comment to the motherId comment
-module.exports.addComment = async(req, res, next) => {
+// Validate mother-post - add a comment stat to it
+module.exports.verifyMotherId = async(req, res, next) => {
+    const { motherId } = req.body;
     if(req.user){
-        if(req.post_validate && req.body.motherId){
+        if(motherId && mongoose.Types.ObjectId.isValid(motherId)){
             try{
-                await post.findOneAndUpdate({ _id : req.body.motherId}, {$inc : {comments : 1}});
+                req.mother_data = post.findOneAndUpdate({ _id : motherId}, { $inc : {comments : 1 }})
             }
-            catch(err) {
+            catch(err){
                 console.log(err);
             }
-        }
-        else {
-            req.body.motherId = null;
         }
     }
     next();
