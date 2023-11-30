@@ -74,7 +74,7 @@ db.once('open', async () => {
   // Génère les 100 utilisateurs
   const users = [];
   const userCredentials = []; // tableau stock les données users
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 2; i++) {
     const picture = await getRandomImgurImage();
     const username = faker.internet.userName().replace(/\./g, '');
     const password = generateRandomPassword();
@@ -155,7 +155,6 @@ db.once('open', async () => {
 
       await post.save();
       user.posts += 1;
-      await user.save();
 
       // Génère des commentaires pour chaque post
       const gennerateRandomComments = () => Math.floor(Math.random() * 6) + 1;
@@ -215,9 +214,7 @@ db.once('open', async () => {
 
       await follower.save();
       user.subscribes += 1;
-      await user.save();
       followerUser.subscribed += 1;
-      await followerUser.save();
     }
   }
 
