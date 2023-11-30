@@ -3,32 +3,12 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const faker = require('faker'); //bibliothèque pour générer des données utilisateurs réels
-const fs = require('fs'); 
+const fs = require('fs');
 const UserModel = require('./models/user.model.js');
 const PostModel = require('./models/post.model.js');
 const LikeModel = require('./models/like.model.js');
 const FollowerModel = require('./models/follower.model.js');
 
-
-// Récupère une image random a partir d'imgur (a l'aide de l'API imgur)
-const getRandomImgurImage = async () => {
-  try {
-    const response = await axios.get('https://api.imgur.com/3/gallery/random/random/1', {
-      headers: {
-        Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`, //Utilise API imgur pour récupérer des images random pour les posts
-      },
-    });
-
-    if (response.data.success && response.data.data && response.data.data.length > 0) {
-      const imageUrl = response.data.data[0].link;
-      return imageUrl;
-    }
-  } catch (error) {
-    console.error('Error fetching Imgur image:', error.message);
-  }
-
-  return null;
-};
 
 // Connection a MongoDB, /!\ peut être a corriger /!\
 mongoose.connect(process.env.mongodb_url, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -38,24 +18,77 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', async () => {
   console.log('Connected to MongoDB');
 
-//Génère date de naissance random 
+
+  const getRandomImgurImage = async () => {
+    try {
+      const timestamp = new Date().getTime();
+      const response = await axios.get(`https://api.imgur.com/3/gallery/random/random/1?timestamp=${timestamp}`, {
+        headers: {
+          Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+        },
+      });
+
+      if (response.data.success && response.data.data && response.data.data.length > 0) {
+        const imageData = response.data.data[0];
+        const imageUrl = imageData.link;
+
+        // Check if the image has a valid extension
+        if (imageData.type && ['image/png', 'image/jpeg', 'image/gif'].includes(imageData.type)) {
+          // If it's a valid extension, replace the link with a direct link to the image
+          const directLink = imageUrl.replace('https://imgur.com', 'https://i.imgur.com').replace('/a/', '/');
+
+          return directLink + '.png';
+        }
+
+        // If it's not a valid extension, try fetching another image
+        return getRandomImgurImage();
+      }
+    } catch (error) {
+      console.error('Error fetching Imgur image:', error.message);
+    }
+
+    return null;
+  };
+
+
+
+
+  //Génère date de naissance random 
   const generateRandomDOB = () => faker.date.between('1980-01-01', '2002-01-01');
+
+  //Génère un mot de passe conforme aux règles
+  const generateRandomPassword = () => {
+    const minLength = 8;
+    const uppercaseRegex = /[A-Z]/;
+    const digitRegex = /\d/;
+
+    let password = '';
+
+    while (password.length < minLength || !uppercaseRegex.test(password) || !digitRegex.test(password)) {
+      password = faker.internet.password();
+    }
+
+    return password;
+  };
 
   // Génère les 100 utilisateurs
   const users = [];
   const userCredentials = []; // tableau stock les données users
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     const picture = await getRandomImgurImage();
+    const username = faker.internet.userName().replace(/\./g, '');
+    const password = generateRandomPassword();
+    const email = faker.internet.email();
+
     const user = new UserModel({
-      nickname: faker.internet.userName(),
-      mail: faker.internet.email(),
-      password: faker.internet.password(),
+      nickname: username,
+      mail: email,
+      password: password,
       lastname: faker.name.lastName(),
       firstname: faker.name.firstName(),
-      picture: faker.internet.avatar(),
+      picture: picture,
       bio: faker.lorem.sentence(),
       birthday: generateRandomDOB(),
-      rank: null,
       subscribes: 0,
       subscribed: 0,
       coins: 0,
@@ -63,32 +96,60 @@ db.once('open', async () => {
       creation: new Date(),
     });
 
-  await user.save();
+    await user.save();
     users.push(user);
 
-// Stock les combinaisons mail/mdp
-    userCredentials.push({ email: user.mail, password: user.password });
+    // Stock les combinaisons mail/mdp
+    userCredentials.push({ username, email, password });
   }
 
+  // Ecrit dans le fichier les combos user/password
+  fs.writeFile('users_credentials.txt', JSON.stringify(userCredentials), (err) => {
+    if (err) throw err;
+    console.log('User credentials saved to users_credentials.txt');
+  });
 
- // Nombre de posts pour chaque user
-  const generateRandomPosts = () => Math.floor(Math.random() * 10) + 1;
+  // Liste de 100 tags différents
 
-//Génère les 400 posts
+  const realTags = [
+    "vacances", "soleil", "famille", "voyage", "nature", "photographie", "amis", "cuisine", "animaux", "sport",
+    "musique", "lecture", "cinéma", "art", "technologie", "mode", "histoire", "science", "éducation", "automobile",
+    "voyage", "aventure", "divertissement", "exploration", "célébrités", "humour", "jeux", "fitness", "santé", "alimentation",
+    "spiritualité", "design", "anecdotes", "architecture", "finance", "actualités", "écologie", "politique", "religion", "événements",
+    "science-fiction", "fantaisie", "histoire", "romance", "humour", "photographie", "technologie", "astronomie", "météo", "jardinage",
+    "bricolage", "artisanat", "beauté", "pensées", "motivation", "inspiration", "positivité", "bien-être", "détente", "apprentissage",
+    "enseignement", "entrepreneuriat", "succès", "échecs", "rêves", "ambitions", "éthique", "voyages dans le temps", "innovation", "science des données",
+    "intelligence artificielle", "robotique", "espace", "océanographie", "archéologie", "psychologie", "philosophie", "biographie", "théâtre", "développement personnel",
+    "spiritualité", "minimalisme", "écriture", "poésie", "humour", "comédie", "documentaire", "fiction", "non-fiction", "mystère", "thriller",
+    "horreur", "action", "aventure", "comédie romantique", "biopic", "science-fiction", "fantaisie", "drame", "animation", "musical", "historique"
+  ];
+
+
+  // Nombre de posts pour chaque user
+  const generateRandomPosts = () => Math.floor(Math.random() * 6) + 1;
+  console.log(`Generating ${users.length} posts`);
+  // Génère les posts
   for (const user of users) {
     const numPosts = generateRandomPosts();
+    console.log(`Generating ${numPosts} posts`);
     for (let i = 0; i < numPosts; i++) {
       const postPicture = await getRandomImgurImage();
+
+      // Génère entre 1 et 3 tags aléatoires
+      const numTags = Math.floor(Math.random() * 2) + 1;
+      const tags = Array.from({ length: numTags }, () => faker.random.arrayElement(realTags));
+      const buy = Math.random() < 0.5;
+
       const post = new PostModel({
         creatorId: user._id,
         ownerId: user._id,
         picture: postPicture,
         description: faker.lorem.sentence(),
-        tags: [faker.lorem.word(), faker.lorem.word()],
+        tags: tags,
         likes: 0,
         comments: 0,
-        buy: false,
-        price: faker.random.number({ min: 5, max: 100 }),
+        buy: buy,
+        price: 10,
         creation: new Date(),
       });
 
@@ -96,31 +157,32 @@ db.once('open', async () => {
       user.posts += 1;
       await user.save();
 
- // Génère des commentaires pour chaque post
-    const numComments = Math.floor(Math.random() * 5); // Nombre de commentaires par post
-    for (let k = 0; k < numComments; k++) {
-      const commentPicture = await getRandomImgurImage();
-      const comment = new PostModel({
-        creatorId: users[Math.floor(Math.random() * users.length)]._id, // Choisis un utilisateur aléatoire comme créateur du commentaire
-        ownerId: user._id,
-        picture: commentPicture,
-        description: faker.lorem.sentence(),
-        tags: [faker.lorem.word(), faker.lorem.word()],
-        likes: 0,
-        comments: 0,
-        buy: false,
-        price: 10,
-        creation: new Date(),
-        motherId: post._id, // Assigne l'ID du post parent au commentaire
-      });
+      // Génère des commentaires pour chaque post
+      const gennerateRandomComments = () => Math.floor(Math.random() * 6) + 1;
+      const numComments = gennerateRandomComments(); // Nombre de commentaires par post
+      console.log(`Generating ${numComments} posts`);
+      for (let k = 0; k < numComments; k++) {
+        const comment = new PostModel({
+          creatorId: users[Math.floor(Math.random() * users.length)]._id, // Choisis un utilisateur aléatoire comme créateur du commentaire
+          ownerId: user._id,
+          picture: null,
+          description: faker.lorem.sentence(),
+          tags: null,
+          likes: 0,
+          comments: 0,
+          buy: false,
+          price: 10,
+          creation: new Date(),
+          motherId: post._id, // Assigne l'ID du post parent au commentaire
+        });
 
-      await comment.save();
-      post.comments += 1;
-      await post.save();
-    }
+        await comment.save();
+        post.comments += 1;
+        await post.save();
+      }
 
-// Génère des likes pour chaque post
-const numLikes = Math.floor(Math.random() * users.length) + 1; // likes par posts varient entre 1 et le nombre d'utilisateurs
+      // Génère des likes pour chaque post
+      const numLikes = Math.floor(Math.random() * users.length) + 1; // likes par posts varient entre 1 et le nombre d'utilisateurs
       const randomUsers = users.slice();
       for (let j = 0; j < numLikes; j++) {
         const randomIndex = Math.floor(Math.random() * randomUsers.length);
@@ -138,7 +200,7 @@ const numLikes = Math.floor(Math.random() * users.length) + 1; // likes par post
     }
   }
 
-// Génère des liens entre les utilisateurs
+  // Génère des liens entre les utilisateurs
   for (const user of users) {
     const numFollowers = Math.floor(Math.random() * users.length);
     const randomUsers = users.slice();
@@ -158,9 +220,6 @@ const numLikes = Math.floor(Math.random() * users.length) + 1; // likes par post
       await followerUser.save();
     }
   }
-
-  // Génère le fichier user_credentials avec les combo mail/mdp de chaque user
-  fs.writeFileSync('user_credentials.txt', userCredentials.map(cred => `${cred.email} - ${cred.password}`).join('\n'));
 
   console.log('Génération accomplie avec succès.');
   mongoose.connection.close();
