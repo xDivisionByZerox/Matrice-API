@@ -1,14 +1,16 @@
 const thread = require('../models/thread.model');
 const post = require('../models/post.model');
 
+const { primaryTags } = require("../utils/stat");
+
 module.exports.createThread = async (req, res) => {
     if(req.user){
         if(req.user_token_data){
             if(!req.thread_data){
-                if(req.posts_data){
-                    console.log(req.posts_data);
+                if(req.posts_data && (req.posts_data.length >= 5)){
                     try {
-                        const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
+                        var tagsUser = await primaryTags(req.posts_data);
+                        const t = new thread({ name : req.user_token_data.mail , tags : tagsUser ,posts : []});
                         const savedThread = await t.save();
                         res.status(201).json(savedThread);
                     } catch (error) {
@@ -60,6 +62,44 @@ module.exports.feedThread = async (req, res) => {
     if(req.user){
         if(req.user_token_data){
             if(req.thread_data){
+                if(req.thread_data.tags.length == 0){
+                    try{
+                        var new_posts = await post.aggregate([
+                                        { $match: { _id: { $nin: req.thread_data.posts } } },
+                                        { $sample: { size: 5 } },
+                                        { $sort: { creation: -1 } }
+                                        ]).exec();
+                        const new_posts_ids = new_posts.map(document => document._id);                
+                        await thread.findByIdAndUpdate(
+                            { _id : req.thread_data._id},
+                            { $push: { posts: { $each: new_posts_ids } } },
+                        );
+                        res.status(200).json(new_posts);
+                    }
+                    catch(err){
+                        console.log(err);
+                        res.status(500).send("Thread error :");
+                    }
+                }
+                else{
+                    const tagsUser = req.thread_data.tags.map(subArray => subArray[0]);
+                    try{
+                        var new_posts = await post.aggregate([
+                                        { $match: { _id: { $nin: req.thread_data.posts }, tags : { $in : tagsUser}}},
+                                        { $sample: { size: 5 } },
+                                        { $sort: { creation: -1 } }
+                                        ]).exec();
+                        const new_posts_ids = new_posts.map(document => document._id);                
+                        await thread.findByIdAndUpdate(
+                            { _id : req.thread_data._id},
+                            { $push: { posts: { $each: new_posts_ids } } },
+                        );
+                        res.status(200).json(new_posts);
+                    }
+                    catch(err){
+                        res.status(500).send("Thread error :");
+                    }
+                }
             }
             else{
                 res.status(400).send("Thread don't exists");

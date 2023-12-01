@@ -74,15 +74,15 @@ db.once('open', async () => {
   // Génère les 100 utilisateurs
   const users = [];
   const userCredentials = []; // tableau stock les données users
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 400; i++) {
     const picture = await getRandomImgurImage();
     const username = faker.internet.userName().replace(/\./g, '');
     const password = generateRandomPassword();
-    const email = faker.internet.email();
+    const mail = faker.internet.email();
 
     const user = new UserModel({
       nickname: username,
-      mail: email,
+      mail: mail,
       password: password,
       lastname: faker.name.lastName(),
       firstname: faker.name.firstName(),
@@ -100,7 +100,7 @@ db.once('open', async () => {
     users.push(user);
 
     // Stock les combinaisons mail/mdp
-    userCredentials.push({ username, email, password });
+    userCredentials.push({ username, mail, password });
   }
 
   // Ecrit dans le fichier les combos user/password

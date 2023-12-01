@@ -7,7 +7,7 @@ const ThreadSchema = mongoose.Schema(
             required : true
         },
         tags : {
-            type : [String],
+            type : {},
             required : true
         },
         posts : {

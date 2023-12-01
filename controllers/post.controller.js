@@ -17,7 +17,6 @@ module.exports.createPost = async(req, res) => {
         p.ownerId = req.user._id;
         await p.save()
         .then(() => {
-            
             res.status(200).send("Posted : success");
         })
         .catch((err) => {
