@@ -65,7 +65,7 @@ module.exports.feedThread = async (req, res) => {
                 if(req.thread_data.tags.length == 0){
                     try{
                         var new_posts = await post.aggregate([
-                                        { $match: { _id: { $nin: req.thread_data.posts } } },
+                                        { $match: { _id: { $nin: req.thread_data.posts }, motherId : null } },
                                         { $sample: { size: 5 } },
                                         { $sort: { creation: -1 } }
                                         ]).exec();
@@ -85,7 +85,7 @@ module.exports.feedThread = async (req, res) => {
                     const tagsUser = req.thread_data.tags.map(subArray => subArray[0]);
                     try{
                         var new_posts = await post.aggregate([
-                                        { $match: { _id: { $nin: req.thread_data.posts }, tags : { $in : tagsUser}}},
+                                        { $match: { _id: { $nin: req.thread_data.posts }, motherId : null, tags : { $in : tagsUser}}},
                                         { $sample: { size: 5 } },
                                         { $sort: { creation: -1 } }
                                         ]).exec();
