@@ -158,6 +158,27 @@ module.exports.search = async(req, res) => {
     }
 }
 
+module.exports.group = async(req, res) => {
+    if(req.user){
+        if(req.body.users_id){
+            let { users_id } = req.body;
+            try{
+                users_id = users_id.filter((id) => mongoose.Types.ObjectId.isValid(id));
+                var users = await user.find({ _id : {$in : users_id}})
+                            .select("-password");
+                res.status(200).json(users);
+            }
+            catch (err){
+                console.log(err)
+                res.status(500).send("Error : user getGroup")
+            }
+        }
+        else{
+            res.status(400).send("No users specified : users_id")
+        }
+    }
+}
+
 
 //                              //
 //-------- MiddleWares----------//

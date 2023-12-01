@@ -31,6 +31,8 @@ router.post('/update',  authentificateToken,
 router.post('/byid', userController.verifyExists
                    , userController.getById);
 
+router.post('/getGroup', authentificateToken
+                      , userController.group)
 // Search user
 router.post('/search', authentificateToken
                      , userController.search);
