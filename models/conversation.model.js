@@ -8,19 +8,15 @@ const MessageSchema = mongoose.Schema(
         },
         message : {
             type : String,
-            required : true
+            required : false
         },
         picture : {
             type : String,
             required : false
         },
-        sent : {
+        creation : {
             type : Date,
             default : new Date()
-        },
-        seen : {
-            type : Boolean,
-            default : false
         }
     }
 );
@@ -35,8 +31,13 @@ const ConversationSchema = mongoose.Schema(
         messages : {
             type : [MessageSchema],
             required : true
+        },
+        views :{
+            type : [mongoose.SchemaTypes.ObjectId],
+            required : true
         }
     }
 );
 
-module.exports = mongoose.model("conversation", ConversationSchema)
+module.exports = mongoose.model("conversation", ConversationSchema);
+module.exports = mongoose.model("message", MessageSchema); 

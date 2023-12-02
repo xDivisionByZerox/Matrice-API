@@ -20,6 +20,7 @@ const likeRouter = require("./routes/like.route");
 const rankRouter = require("./routes/rank.route");
 const viewRouter = require("./routes/view.route");
 const threadRouter = require("./routes/thread.route");
+const conversationdRouter = require("./routes/conversation.route");
 
 // Routes used
 app.use('/user',userRouter)
@@ -29,5 +30,6 @@ app.use('/like',likeRouter)
 app.use('/rank',rankRouter)
 app.use('/view',viewRouter)
 app.use('/thread',threadRouter);
+app.use('/conv',conversationdRouter);
 
 app.listen(process.env.PORT, () => console.log('Server running on port 3000!'));

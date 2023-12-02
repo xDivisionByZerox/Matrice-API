@@ -314,9 +314,10 @@ module.exports.addPost = async (req, res, next) => {
 // req.user_token_data --- 
 module.exports.buyRankTransaction = async(req, res, next) => {
     if(req.user && req.user_token_data && req.rank_data){
-        if((req.user_token_data.coins >= req.rank_data.price) && (req.rank_data.num == (req.user_token_data + 1))){
+        if((req.user_token_data.coins >= req.rank_data.price) && (req.rank_data.num == (req.user_token_data.rank + 1))){
             try{
-                await user.findOneAndUpdate({ _id : req.user_token_data._id}, {$set : {num : req.rank_data.num}});
+                await user.findOneAndUpdate({ _id : req.user_token_data._id}, 
+                                            {$set : {num : req.rank_data.num}, $inc : {coins : -req.rank_data.price}});
                 req.validate_transaction = true;
             }
             catch(err){
