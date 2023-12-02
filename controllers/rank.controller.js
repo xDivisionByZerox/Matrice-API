@@ -31,7 +31,7 @@ module.exports.buy = async (req, res) => {
         if(req.rank_data){
             if(req.user_token_data){
                 if(req.validate_transaction){
-                    res.status(200).send("Achat refusé : transaction user coins");    
+                    res.status(200).send("Achat accepté");    
                 }
                 else{
                     res.status(400).send("Achat refusé : transaction user coins");    
