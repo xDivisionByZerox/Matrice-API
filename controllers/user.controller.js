@@ -192,6 +192,19 @@ module.exports.verifyExists = async(req, res, next) => {
     }
     next();
 }
+// Middleware - Get users in array users_ids
+module.exports.getDataUsers_Id = async (req,res,next) => {
+    if(req.user && req.body.users_id){
+        try{
+            req.body.users_id.push(req.user._id);
+            req.users_data = await user.find({ _id : { $in: req.body.users_id } });
+        }       
+        catch(err){
+            console.log(err);
+        }
+    }
+    next();
+}
 
 // Verify 
 module.exports.AddLike = async(req, res, next) => {

@@ -1,37 +1,26 @@
 const mongoose = require('mongoose');
-
-const MessageSchema = mongoose.Schema(
-    {
-        userId : {
-            type : mongoose.SchemaTypes.ObjectId,
-            required : true
-        },
-        message : {
-            type : String,
-            required : false
-        },
-        picture : {
-            type : String,
-            required : false
-        },
-        creation : {
-            type : Date,
-            default : new Date()
-        }
-    }
-);
+const message = require('./message.schema');
 
 // In this object the user A follow the user B
 const ConversationSchema = mongoose.Schema(
     {
+        name : {
+            type : String,
+            required : true
+        },
         users : {
             type : [mongoose.SchemaTypes.ObjectId],
             required : true
         },
-        messages : {
-            type : [MessageSchema],
+        admins :{
+            type : [mongoose.SchemaTypes.ObjectId],
             required : true
         },
+        messages : {
+            type : [message],
+            required : true
+        },
+        // On stocke ceux qui sont à jour.
         views :{
             type : [mongoose.SchemaTypes.ObjectId],
             required : true
@@ -40,4 +29,3 @@ const ConversationSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("conversation", ConversationSchema);
-module.exports = mongoose.model("message", MessageSchema); 
