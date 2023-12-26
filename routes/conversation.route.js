@@ -8,12 +8,12 @@ const { authentificateToken } = require("../utils/auth.js");
 
 // Manage the conversation
 router.post('/create', authentificateToken
-                     , userController.verifyUserToken
                      , userController.getDataUsers_Id
                      , conversationController.create);
 
 router.post('/delete', authentificateToken
-                , conversationController.delete);
+                     , userController.verifyUserTokenThread
+                     , conversationController.delete);
 
 // Post things on conversations - conversation_id
 router.post('/send'  , authentificateToken
