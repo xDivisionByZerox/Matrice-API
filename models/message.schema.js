@@ -17,11 +17,7 @@ const MessageSchema = mongoose.Schema(
         creation : {
             type : Date,
             default : new Date()
-        },
-        creation : {
-            type : Date,
-            default : new Date()
-        } 
+        }
     }
 );
 

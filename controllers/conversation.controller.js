@@ -65,19 +65,109 @@ module.exports.delete = async(req, res) => {
 }
 
 module.exports.send = async(req, res) => {
-    if(req.user){
-    
+    if(req.user && req.user_token_data){
+        if(req.conv_data){
+            let { message, picture } = req.body;
+            if(!picture || picture.length < 1){
+                picture = "";
+            }
+            req.conv_data.views = [];
+            let m = {
+                userId : req.user_token_data._id,
+                message : message,
+                picture : picture
+            };
+            await conversation.updateOne(
+                { _id: req.conv_data._id },
+                { $push: { messages: m } }
+            );
+            res.status(200).json(m);
+        }
+        else {
+            res.status(400).send("Wrong _id : conv_id");
+        }
     }
 }
 
 module.exports.getConvs = async(req, res) => {
     if(req.user){
-        
+        if(req.convs_data && req.convs_data.length > 0){
+            res.status(200).json(req.convs_data);
+        }
+        else{
+            res.status(400).send("No convs");
+        }
     }
 }
 
 module.exports.getMessages = async(req, res) => {
     if(req.user){
-        
+        if(req.conv_data){
+            let { message_date } = req.body; 
+            if(!message_date){
+                message_date = new Date();
+            }
+            let messages = await conversation.aggregate([
+                { $match: { _id: req.conv_data._id } },
+                { $unwind: "$messages" },
+                { $sort: { "messages.creation": 1 } },
+                { $limit: 10 },
+                { $match: { "messages.creation": { $lt : new Date(message_date) } } },
+                { $project: {
+                    _id: 0,
+                    messageId: "$messages._id",
+                    userId: "$messages.userId",
+                    message: "$messages.message",
+                    picture: "$messages.picture",
+                    creation: "$messages.creation"
+                }}
+            ]);
+            res.status(200).json(messages);
+        }
+        else {
+            res.status(400).send("Wrong _id : conv_id");
+        }
+    }
+}
+
+//                              //
+//-------- MiddleWares----------//
+//                              //
+
+module.exports.verifyExists = async (req, res, next) => {
+    const { conv_id } = req.body;
+    if(conv_id && mongoose.Types.ObjectId.isValid(conv_id)){
+        req.conv_data = await conversation.findOne( { _id : conv_id } ).select("-messages") ;
+    }
+    next();
+}
+
+module.exports.MiddleGetConvs = async (req, res, next) => {
+    if(req.user && req.user_token_data){
+        const { convs_id } = req.body;
+        let convs_verify_id = [];
+        if( convs_id && convs_id.length > 0 ){
+            let convs_verify_id = convs_id.filter((id) => mongoose.Types.ObjectId.isValid(id));
+        }
+        // Toutes les convs avec de nouveaux messages
+        let convs_new = await conversation.find({ 
+            users : { $in : [req.user_token_data._id] },
+            _id : { $nin : convs_verify_id },
+            views : { $nin : [req.user_token_data._id]}
+        })
+        .select("-messages");
+        if(convs_new.length > 10){
+            req.convs_data = convs_new;
+        }
+        else{
+            let convs_seen = await conversation.find({ 
+                users : { $in : [req.user_token_data._id] },
+                _id : { $nin : convs_verify_id }
+            })
+            .select("-messages")
+            .limit(10);
+            req.convs_data = convs_new.concat(convs_seen);
+        }
+        next();
     }
 }

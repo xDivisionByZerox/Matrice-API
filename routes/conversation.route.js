@@ -16,15 +16,20 @@ router.post('/delete', authentificateToken
                      , conversationController.delete);
 
 // Post things on conversations - conversation_id
-router.post('/send'  , authentificateToken
-                , conversationController.send);
+router.post('/send' , authentificateToken
+                    , userController.verifyUserTokenThread  // token    -> req.user_token_data
+                    , conversationController.verifyExists   // conv_id  -> req.conv_data
+                    , conversationController.send);
 
 // Get data of conversation - token - 10 by 10
-router.post('/getConvs'  , authentificateToken
-                    , conversationController.getConvs);
+router.post('/getConvs' , authentificateToken
+                        , userController.verifyUserTokenThread
+                        , conversationController.MiddleGetConvs
+                        , conversationController.getConvs);
 
 // Get data of conversation - token - 10 by 10
-router.post('/getMessages', authentificateToken
-                          , conversationController.getMessages);
+router.post('/getMessages'  , authentificateToken
+                            , conversationController.verifyExists
+                            , conversationController.getMessages);
 
 module.exports = router;
