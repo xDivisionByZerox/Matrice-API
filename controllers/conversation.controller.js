@@ -71,7 +71,6 @@ module.exports.send = async(req, res) => {
             if(!picture || picture.length < 1){
                 picture = "";
             }
-            req.conv_data.views = [];
             let m = {
                 userId : req.user_token_data._id,
                 message : message,
@@ -79,7 +78,7 @@ module.exports.send = async(req, res) => {
             };
             await conversation.updateOne(
                 { _id: req.conv_data._id },
-                { $push: { messages: m } }
+                { $push: { messages: m }, $set: { views : [] } }
             );
             res.status(200).json(m);
         }
@@ -122,6 +121,7 @@ module.exports.getMessages = async(req, res) => {
                     creation: "$messages.creation"
                 }}
             ]);
+            await conversation.findOneAndUpdate( { _id : req.conv_data._id},  { $push: { views : req.user._id} });
             res.status(200).json(messages);
         }
         else {
