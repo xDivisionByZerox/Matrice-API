@@ -130,6 +130,25 @@ module.exports.getMessages = async(req, res) => {
     }
 }
 
+
+module.exports.exists = async(req, res) => {
+    if(req.user){
+        if(req.user_data){  
+            let conv_users = [req.user_data._id, req.user._id];
+            let conv = await conversation.find( { users : { $in: conv_users }} );
+            if(conv && conv.length > 0 ){
+                res.status(200).json(conv);
+            }
+            else{
+                res.status(400).send("Don't exists : conv");
+            }
+        }
+        else{
+            res.status(500).send("Wrong _id : user_id");
+        }
+    }
+}
+
 //                              //
 //-------- MiddleWares----------//
 //                              //

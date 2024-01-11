@@ -20,7 +20,6 @@ const ConversationSchema = mongoose.Schema(
             type : [message],
             required : true
         },
-        // On stocke ceux qui sont à jour.
         views :{
             type : [mongoose.SchemaTypes.ObjectId],
             required : true

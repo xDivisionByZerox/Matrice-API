@@ -32,4 +32,9 @@ router.post('/getMessages'  , authentificateToken
                             , conversationController.verifyExists
                             , conversationController.getMessages);
 
+// Get data of conversation - token - 10 by 10
+router.post('/exists'   , authentificateToken
+                        , userController.verifyExists
+                        , conversationController.exists);
+                    
 module.exports = router;
