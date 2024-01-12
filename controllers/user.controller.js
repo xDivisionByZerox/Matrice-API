@@ -208,15 +208,15 @@ module.exports.getDataUsers_Id = async (req,res,next) => {
 
 // Verify 
 module.exports.AddLike = async(req, res, next) => {
-    if(!req.like_data){
+    if(!req.like_data && req.post_data){
         await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : {coins : 0.5}});
     }
     next();
 }
 
 module.exports.AddDislike = async(req, res, next) => {
-    if(req.like_data){
-        await user.findOneAndUpdate({ _id: req.post_data.ownerId }, {$inc : { coins : -0.5 }});
+    if(req.like_data && req.post_data){
+        await user.findOneAndUpdate({ _id: req.post_data.ownerId}, {$inc : { coins : -0.5 }});
     }
     next();
 }

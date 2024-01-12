@@ -201,11 +201,13 @@ module.exports.verifyOwner = async (req, res, next) =>{
 // Need to verify if like exists - req.post
 module.exports.AddLike = async(req, res, next) => {
     const { post_id } = req.body;
-    if(!req.like_data){
-        req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {price : 1, likes : 1}});
-    }
-    else{
-        req.post_data = await post.findOne({_id : post_id});
+    if(post_id && mongoose.Types.ObjectId.isValid(post_id)){
+        if(!req.like_data){
+            req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {price : 1, likes : 1}});
+        }
+        else{
+            req.post_data = await post.findOne({_id : post_id});
+        }
     }
     next();
 }
@@ -213,11 +215,13 @@ module.exports.AddLike = async(req, res, next) => {
 // Need to verify if like exists - req.like_data
 module.exports.AddDislike = async(req, res, next) => {
     const { post_id } = req.body;
-    if(req.like_data){
-        req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {price : -1, likes : -1}});
-    }
-    else{
-        req.post_data = await post.findOne({_id : post_id});
+    if(post_id && mongoose.Types.ObjectId.isValid(post_id)){
+        if(req.like_data){
+            req.post_data = await post.findOneAndUpdate({_id : post_id}, {$inc : {price : -1, likes : -1}});
+        }
+        else{
+            req.post_data = await post.findOne({_id : post_id});
+        }
     }
     next();
 }

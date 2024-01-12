@@ -5,7 +5,7 @@ module.exports.like = async (req, res) => {
     if(req.post_data && !req.like_data){
         link = {
             userId : req.user._id,
-            postId : req.body.post_id
+            postId : req.post_data._id
         }
         l = new like(link);
             await l.save()
@@ -22,10 +22,11 @@ module.exports.like = async (req, res) => {
 
 
 module.exports.dislike = async (req, res) => {
+    console.log(req.post_data);
     if(req.post_data && req.like_data){
         link = {
             userId : req.user._id,
-            postId : req.body.post_id
+            postId : req.post_data._id
         }
         await like.deleteMany(link)
         .then(() => {         
@@ -62,8 +63,9 @@ module.exports.doIlike = async (req, res) => {
 //                              //
 module.exports.verifyExists = async(req, res, next) => {
     const { post_id } = req.body;
-    const like_data = await like.findOne({ userId : req.user._id, postId : post_id}).exec();
-    req.like_data = like_data;
+    if(post_id && mongoose.Types.ObjectId.isValid(post_id)){
+        req.like_data = await like.findOne({ userId : req.user._id, postId : post_id});
+    }
     next();
 }
 
