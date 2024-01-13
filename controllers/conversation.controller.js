@@ -3,6 +3,7 @@ const message = require('../models/message.schema');
 const mongoose = require('mongoose');
 
 module.exports.create = async(req, res) => {
+    console.log(req.users_data);
     if(req.user){
         if(req.users_data && req.users_data.length > 1){
             let { name } = req.body;
@@ -13,7 +14,6 @@ module.exports.create = async(req, res) => {
             try{
                 let idArray = req.users_data.map(document => document._id);
                 let user_id = new mongoose.mongo.ObjectId(req.user._id);
-                idArray.push(user_id);
                 let conv = new conversation({
                     name : name,
                     users : idArray,
@@ -135,7 +135,8 @@ module.exports.exists = async(req, res) => {
     if(req.user){
         if(req.user_data){  
             let conv_users = [req.user_data._id, req.user._id];
-            let conv = await conversation.find( { users : { $in: conv_users }} );
+            let conv_user_autresens = [req.user._id, req.user_data._id];
+            let conv = await conversation.find( { $or : [{users : conv_users}, {users : conv_user_autresens}] } );
             if(conv && conv.length > 0 ){
                 res.status(200).json(conv);
             }
