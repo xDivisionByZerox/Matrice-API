@@ -120,6 +120,7 @@ module.exports.getMessages = async(req, res) => {
                     creation: "$messages.creation"
                 }}
             ]);
+            messages.reverse();
             await conversation.findOneAndUpdate( { _id : req.conv_data._id},  { $push: { views : req.user._id} });
             res.status(200).json(messages);
         }
