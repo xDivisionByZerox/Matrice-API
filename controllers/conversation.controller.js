@@ -108,7 +108,7 @@ module.exports.getMessages = async(req, res) => {
             let messages = await conversation.aggregate([
                 { $match: { _id: req.conv_data._id } },
                 { $unwind: "$messages" },
-                { $sort: { "messages.creation": 1 } },
+                { $sort: { "messages.creation": -1 } },
                 { $limit: 10 },
                 { $match: { "messages.creation": { $lt : new Date(message_date) } } },
                 { $project: {
