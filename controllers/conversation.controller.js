@@ -3,7 +3,6 @@ const message = require('../models/message.schema');
 const mongoose = require('mongoose');
 
 module.exports.create = async(req, res) => {
-    console.log(req.users_data);
     if(req.user){
         if(req.users_data && req.users_data.length > 1){
             let { name } = req.body;
