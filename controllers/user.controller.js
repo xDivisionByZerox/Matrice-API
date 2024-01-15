@@ -277,11 +277,11 @@ module.exports.verifyUserTokenThread = async(req, res, next) => {
 module.exports.buyTransaction = async(req, res, next) => {
     if(req.post_data && req.owner_data && req.user_token_data){
         if(req.user_token_data._id != req.post_data.ownerId){
-            if(req.user_token_data.coins >= ( req.post_data.price * (1 + process.env.taxe) )){
+            if(req.user_token_data.coins >= ( req.post_data.price * (1 + parseFloat(process.env.taxe)) )){
                 try{
                     await user.findOneAndUpdate({ _id : req.user_token_data._id }, 
-                        { $inc : {coins : -( req.post_data.price * (1 + process.env.taxe))} });
-                    await user.findOneAndUpdate({ _id : req.owner_data._id }, 
+                        { $inc : {coins : -( req.post_data.price * (1 + parseFloat(process.env.taxe)))} });
+                    await user.findOneAndUpdate({ _id : req.post_data.ownerId }, 
                         { $inc : {coins : req.post_data.price} });
                     req.validate_transaction = true;
                 }
