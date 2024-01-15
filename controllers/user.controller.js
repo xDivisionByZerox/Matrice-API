@@ -164,9 +164,10 @@ module.exports.group = async(req, res) => {
             let { users_id } = req.body;
             try{
                 users_id = users_id.filter((id) => mongoose.Types.ObjectId.isValid(id));
-                var users = await user.find({ _id : {$in : users_id}})
-                            .select("-password");
-                res.status(200).json(users);
+                let users_info = await Promise.all(users_id.map(async id => {
+                    return await user.findOne({ _id: id }).select("-password");
+                }));
+                res.status(200).json(users_info);
             }
             catch (err){
                 console.log(err)
