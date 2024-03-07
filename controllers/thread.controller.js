@@ -9,7 +9,9 @@ module.exports.createThread = async (req, res) => {
             if(!req.thread_data){
                 if(req.posts_data && (req.posts_data.length >= 5)){
                     try {
+                        // Dictionary which contains the repartition of posts depending on the tag
                         var tagsUser = await primaryTags(req.posts_data);
+                        // Create thread with the personalized
                         const t = new thread({ name : req.user_token_data.mail , tags : tagsUser ,posts : []});
                         const savedThread = await t.save();
                         res.status(201).json(savedThread);
@@ -17,8 +19,9 @@ module.exports.createThread = async (req, res) => {
                         res.status(500).json({ error: error.message });
                     }
                 }
-                else {
+                else { 
                     try {
+                        // TODO : Système de trends - expiration de tags
                         const t = new thread({ name : req.user_token_data.mail , tags : [] ,posts : []});
                         const savedThread = await t.save();
                         res.status(201).json(savedThread);

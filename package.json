@@ -19,6 +19,7 @@
     "faker": "^5.5.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.6",
+    "svd-js": "^1.1.1",
     "validator": "^13.11.0"
   },
   "devDependencies": {
