@@ -54,6 +54,7 @@ module.exports.createThread = async (req, res) => {
                         });
                         // Constitute the matrix using Object.values
                         let matrix = users_tags.map(doc => Object.values(doc));
+                        console.log(matrix);
                         // SVD call
                         const { u, v, q } = SVD(matrix)
                         console.log("Matrice u:");
@@ -68,6 +69,7 @@ module.exports.createThread = async (req, res) => {
                         const findIndicesOfLargestValues = (arr, numIndices) =>
                             Array.from(arr.entries()).sort((a, b) => b[1] - a[1]).slice(0, numIndices).map(([index]) => index);
                         const u5_indexs = findIndicesOfLargestValues(total, 5);
+                        console.log(total)
                         // 5 more commons tags
                         console.log(u5_indexs);
                         let tags5 = [] 
