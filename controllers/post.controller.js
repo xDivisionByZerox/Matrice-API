@@ -249,6 +249,18 @@ module.exports.postsLikedViewed = async(req, res, next) => {
     next();
 }
 
+
+module.exports.postsSVDposts = async(req, res, next) => {
+    if(req.SVD && req.likes_users){
+        req.SVD_posts_users = [];
+        for(let index = 0 ; index < req.likes_users.length ; index = index + 1){
+            let posts_id = req.likes_users[index].map(document => document.postId);
+            req.SVD_posts_users[index] = await post.find({ _id : { $in: posts_id } });
+        }
+    }
+    next();
+}
+
 // Validate post
 module.exports.verifyModelPost = async(req, res, next) => {
     p.creatorId = req.user._id;

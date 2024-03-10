@@ -17,7 +17,10 @@ router.post('/create',  authentificateToken,                      // req.user
                         userController.verifyUserTokenThread,     // req.user_token_data
                         threadController.verifyExists,            // req.thread_data
                         viewController.get100latest,              // req.views_ids
-                        likeController.get100latest,              // req.likes_ids
+                        likeController.get100latest,              // req.likes_ids -- or get the likes of
+                        userController.getDataUsersId,
+                        likeController.get100latestfromUsers,
+                        postController.postsSVDposts,
                         postController.postsLikedViewed,          // posts_data
                         threadController.createThread);
 

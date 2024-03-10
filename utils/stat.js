@@ -34,3 +34,13 @@ module.exports.primaryTags = async (posts) =>{
   const proportions = top5Categories.map(category => [category[0], Math.round((category[1] / total) * 100 / 10) * 10]);
   return proportions;
 }
+
+module.exports.getAllKeys = async (documents) => {
+  let allKeys = new Set();
+  documents.forEach(doc => {
+    Object.keys(doc).forEach(key => {
+      allKeys.add(key);
+    });
+  });
+  return Array.from(allKeys);
+}

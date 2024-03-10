@@ -76,6 +76,27 @@ module.exports.get100latest = async(req, res, next) => {
         .sort({creation : -1})
         .limit(100)
         .exec();
+        if(req.likes_ids.length < 5){
+            req.SVD = true;
+            req.likes_ids_SVD = await like.find()
+            .sort({creation : -1})
+            .limit(100)
+            .exec();
+            req.ids = req.likes_ids_SVD.map(document => document.userId);
+        }
+    }
+    next();
+}
+
+module.exports.get100latestfromUsers = async(req, res, next) => {
+    if(req.user && req.user_token_data && req.users_data){
+        req.likes_users = [];
+        for(let index = 0 ; index < req.users_data.length ; index = index + 1){
+            req.likes_users[index] = await like.find({ userId : req.users_data[index]._id})
+            .sort({creation : -1})
+            .limit(50)
+            .exec();
+        }
     }
     next();
 }
