@@ -1,7 +1,7 @@
 require('dotenv').config();
 const axios = require('axios');
 const mongoose = require('mongoose');
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 const fs = require('fs');
 const securePassword = require('secure-random-password');
 const UserModel = require('./models/user.model.js');
@@ -52,7 +52,7 @@ db.once('open', async () => {
     return null;
   };
 
-  const generateRandomDOB = () => faker.date.between('1980-01-01', '2002-01-01');
+  const generateRandomDOB = () => faker.date.between({ from: '1980-01-01', to: '2002-01-01' });
 
   const generateRandomPassword = () => {
     const passwordOptions = {
@@ -93,15 +93,15 @@ db.once('open', async () => {
     const password = generateRandomPassword();
     const email = faker.internet.email();
 
-    const interests = faker.random.arrayElements(realTags, 2);
+    const interests = faker.helpers.arrayElements(realTags, 2);
     interests.push("musique");
 
     const user = new UserModel({
       nickname: username,
       mail: email,
       password: password,
-      lastname: faker.name.lastName(),
-      firstname: faker.name.firstName(),
+      lastname: faker.person.lastName(),
+      firstname: faker.person.firstName(),
       picture: picture,
       bio: faker.lorem.sentence(),
       birthday: generateRandomDOB(),
@@ -134,7 +134,7 @@ db.once('open', async () => {
     for (let i = 0; i < numPosts; i++) {
       const postPicture = await getRandomImgurImage();
       const numTags = Math.floor(Math.random() * 2) + 1;
-      const tags = Array.from({ length: numTags }, () => faker.random.arrayElement(realTags));
+      const tags = Array.from({ length: numTags }, () => faker.helpers.arrayElement(realTags));
       const buy = Math.random() < 0.5;
 
       const post = new PostModel({

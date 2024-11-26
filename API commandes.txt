@@ -6,5 +6,5 @@ npm install validator
 npm install bcrypt --save
 npm install cors
 
-npm install axios mongoose bcrypt faker dotenv
-npm install faker
+npm install axios mongoose bcrypt dotenv
+npm install @faker-js/faker

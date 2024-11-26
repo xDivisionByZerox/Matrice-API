@@ -2,7 +2,7 @@ require('dotenv').config();
 const axios = require('axios');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const faker = require('faker'); //bibliothèque pour générer des données utilisateurs réels
+const { faker } = require('@faker-js/faker'); //bibliothèque pour générer des données utilisateurs réels
 const fs = require('fs');
 const UserModel = require('./models/user.model.js');
 const PostModel = require('./models/post.model.js');
@@ -54,7 +54,7 @@ db.once('open', async () => {
 
 
   //Génère date de naissance random 
-  const generateRandomDOB = () => faker.date.between('1980-01-01', '2002-01-01');
+  const generateRandomDOB = () => faker.date.between({ from: '1980-01-01', to: '2002-01-01' });
 
   //Génère un mot de passe conforme aux règles
   const generateRandomPassword = () => {
@@ -84,8 +84,8 @@ db.once('open', async () => {
       nickname: username,
       mail: mail,
       password: password,
-      lastname: faker.name.lastName(),
-      firstname: faker.name.firstName(),
+      lastname: faker.person.lastName(),
+      firstname: faker.person.firstName(),
       picture: picture,
       bio: faker.lorem.sentence(),
       birthday: generateRandomDOB(),
@@ -137,7 +137,7 @@ db.once('open', async () => {
 
       // Génère entre 1 et 3 tags aléatoires
       const numTags = Math.floor(Math.random() * 2) + 1;
-      const tags = Array.from({ length: numTags }, () => faker.random.arrayElement(realTags));
+      const tags = Array.from({ length: numTags }, () => faker.helpers.arrayElement(realTags));
       const buy = Math.random() < 0.5;
 
       const post = new PostModel({
